@@ -80,3 +80,32 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.left-nav {
+  transition: width 0.3s;
+}
+
+.left-nav:hover {
+  width: 240px; /* Width when hovered */
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  overflow: hidden;
+  transition: opacity 0.3s;
+  width: 100%;
+}
+
+.left-nav:hover .nav-item {
+  opacity: 1;
+}
+
+.nav-text {
+  display: none;
+}
+
+.left-nav:hover .nav-text {
+  display: inline;
+}

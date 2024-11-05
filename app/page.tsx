@@ -1,4 +1,4 @@
-import Navbar from "@/components/base/navbar";
+import Navbar from "@/components/base/login-navbar";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
