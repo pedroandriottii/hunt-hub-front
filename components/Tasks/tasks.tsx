@@ -1,14 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Task from "./task-component";
-
-export interface TaskSummary {
-  title: string;
-  description: string;
-  reward: number;
-  tags: string[];
-  ratingRequired: number;
-}
+import { TaskSummary } from "./task-component";
 
 export default function Tasks() {
   const [taskSummaries, setTaskSummaries] = useState<TaskSummary[]>([]);
@@ -23,19 +16,23 @@ export default function Tasks() {
         description: task.description,
         reward: task.reward,
         tags: task.tags,
+        id: task.id,
         ratingRequired: task.ratingRequired,
       }));
       
       setTaskSummaries(summaries);
+      console.log(summaries);
     };
     getAllTasks();
   }, []);
 
   return (
-      <div>
-        {taskSummaries.map((taskSummary) => (
-          <Task key={taskSummary.title} {...taskSummary} />
-        ))}
+      <div className="w-full">
+        <div className="grid grid-cols-3 gap-2">
+          {taskSummaries.map((taskSummary, index) => (
+              <Task key={`${taskSummary.id}-${index}`} {...taskSummary} />
+          ))}
+        </div>
       </div>
   );
 }
