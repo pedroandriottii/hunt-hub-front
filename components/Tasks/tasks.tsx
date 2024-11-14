@@ -10,7 +10,7 @@ export default function Tasks() {
     const getAllTasks = async () => {
       const res = await fetch("http://localhost:8080/task");
       const data = await res.json();
-      
+
       const summaries = data.map((task: any) => ({
         title: task.title,
         description: task.description,
@@ -19,7 +19,7 @@ export default function Tasks() {
         id: task.id,
         ratingRequired: task.ratingRequired,
       }));
-      
+
       setTaskSummaries(summaries);
       console.log(summaries);
     };
@@ -27,12 +27,12 @@ export default function Tasks() {
   }, []);
 
   return (
-      <div className="w-full">
-        <div className="grid grid-cols-3 gap-2">
-          {taskSummaries.map((taskSummary, index) => (
-              <Task key={`${taskSummary.id}-${index}`} {...taskSummary} />
-          ))}
-        </div>
+    <div className="w-full">
+      <div className="grid grid-cols-3 gap-2">
+        {taskSummaries.map((taskSummary, index) => (
+          <Task key={`${taskSummary.id}-${index}`} {...taskSummary} />
+        ))}
       </div>
+    </div>
   );
 }
