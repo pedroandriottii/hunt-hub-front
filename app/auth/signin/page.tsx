@@ -14,6 +14,7 @@ export default function Signin() {
         password: ''
     })
     const [error, setError] = useState(null)
+    const [userRole, setUserRole] = useState(null)
 
     const handleInputChange = (e: { target: { id: any; value: any } }) => {
         const { id, value } = e.target
@@ -23,7 +24,7 @@ export default function Signin() {
         }))
     }
 
-    const handleSubmit = async (e: { preventDefault: () => void }) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setError(null)
 
@@ -39,11 +40,18 @@ export default function Signin() {
             if (!response.ok) {
                 throw new Error('Erro ao fazer login')
             }
-            console.log(response)
-            const accessToken = await response.text()
-            console.log(accessToken)
-            localStorage.setItem('accessToken', accessToken)
-            router.push('/home')
+
+            const data = await response.json()
+            const { token, role } = data
+            console.log("Role do usuário:", role)
+            console.log("Token do usuário:", token)
+            setUserRole(role)
+            localStorage.setItem('accessToken', token)
+            if (role === "ROLE_HUNTER"){
+                router.push('/apply-to-task')
+            } else {
+                router.push('/home')
+            }
         } catch (err) {
             console.error(err)
         }
