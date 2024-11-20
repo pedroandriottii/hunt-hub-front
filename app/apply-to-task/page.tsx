@@ -38,12 +38,13 @@ export default function Component() {
             setError(null);
             try {
                 const token = localStorage.getItem('accessToken');
+                const hunterId = localStorage.getItem("userId");
 
                 if (!token) {
                     throw new Error('No access token found');
                 }
 
-                const response = await fetch('http://localhost:8080/task', {
+                const response = await fetch(`http://localhost:8080/task/not-applied/${hunterId}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
