@@ -14,7 +14,6 @@ export default function Signin() {
         password: ''
     })
     const [error, setError] = useState(null)
-    const [userRole, setUserRole] = useState(null)
 
     const handleInputChange = (e: { target: { id: any; value: any } }) => {
         const { id, value } = e.target
@@ -42,12 +41,14 @@ export default function Signin() {
             }
 
             const data = await response.json()
-            const { token, role } = data
-            console.log("Role do usuário:", role)
+            const { token, id, role} = data
+            console.log("Id do usuário:", id)
             console.log("Token do usuário:", token)
-            setUserRole(role)
+            console.log("Role do usuário:", role)
             localStorage.setItem('accessToken', token)
-            if (role === "ROLE_HUNTER"){
+            localStorage.setItem('userId', id)
+            
+            if (role === 'ROLE_HUNTER'){
                 router.push('/apply-to-task')
             } else {
                 router.push('/home')
