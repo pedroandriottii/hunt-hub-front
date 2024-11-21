@@ -1,5 +1,6 @@
 import TopNavbar from "@/components/base/top-navbar";
 import LeftNavbar from "@/components/base/left-navbar";
+import { Toaster } from "@/components/ui/toaster";
 
 interface ProtectedLayoutProps {
   children: React.ReactNode;
@@ -13,6 +14,7 @@ export default function ProtectedLayout({ children }: ProtectedLayoutProps) {
         <TopNavbar />
         <main className="flex-1 p-6  bg-slate-700">
           {children}
+          <Toaster />
         </main>
       </div>
     </div>
