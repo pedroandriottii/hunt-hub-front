@@ -3,13 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Search, ChevronLeft } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -162,16 +156,7 @@ export default function Component() {
                         </div>
                         <div className="bg-white rounded-lg p-4 shadow-sm">
                             <h2 className="font-medium mb-4">Rating Required</h2>
-                            <Select>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select rating" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="4">4.0+ Stars</SelectItem>
-                                    <SelectItem value="4.5">4.5+ Stars</SelectItem>
-                                    <SelectItem value="5">5.0 Stars</SelectItem>
-                                </SelectContent>
-                            </Select>
+
                         </div>
                         <div className="bg-white rounded-lg p-4 shadow-sm">
                             <h2 className="font-medium mb-4">Type</h2>
