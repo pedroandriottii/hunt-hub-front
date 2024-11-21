@@ -109,3 +109,14 @@ body {
 .left-nav:hover .nav-text {
   display: inline;
 }
+
+.scrollable-container {
+  max-height: calc(100vh - 100px); /* Ajuste conforme necessário */
+  overflow-y: auto;
+}
+
+.fixed-layout {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+}

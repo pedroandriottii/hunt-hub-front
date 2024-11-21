@@ -37,21 +37,13 @@ export default function Signin() {
             });
 
             if (!response.ok) {
-                throw new Error('Erro ao fazer login');
+                throw new Error('Erro ao fazer login')
             }
-
-            const data = await response.json();
-
-            const { token, role, id } = data;
-            localStorage.setItem('accessToken', token);
-            localStorage.setItem('role', role);
-            localStorage.setItem('userId', id);
-
-            console.log('Role:', localStorage.getItem('role'));
-            console.log('Token:', localStorage.getItem('accessToken'));
-            console.log('User ID:', localStorage.getItem('userId'));
-
-            router.push('/home');
+            console.log(response)
+            const accessToken = await response.text()
+            console.log(accessToken)
+            localStorage.setItem('accessToken', accessToken)
+            router.push('/home')
         } catch (err) {
             console.error(err);
         }
