@@ -43,6 +43,7 @@ export default function HunterPage() {
             }
 
             const data = await response.json()
+            console.log("estou aqui",data.role)
             router.push('/auth/signin')
         } catch (error) {
             console.error('Erro:', error)
