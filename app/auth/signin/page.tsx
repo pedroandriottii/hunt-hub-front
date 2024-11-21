@@ -39,8 +39,18 @@ export default function Signin() {
             if (!response.ok) {
                 throw new Error('Erro ao fazer login');
             }
-            const accessToken = await response.text();
-            localStorage.setItem('accessToken', accessToken);
+
+            const data = await response.json();
+            const { token, role, id: userId } = data;
+
+            localStorage.setItem('accessToken', token);
+            localStorage.setItem('role', role);
+            localStorage.setItem('userId', userId);
+
+            console.log(localStorage.getItem('accessToken'));
+            console.log(localStorage.getItem('role'));
+            console.log(localStorage.getItem('userId'));
+
             router.push('/home');
         } catch (err) {
             console.error(err);

@@ -1,4 +1,5 @@
 'use client';
+import { User } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function TopNavbar() {
@@ -6,7 +7,6 @@ export default function TopNavbar() {
         name: "",
         points: 0,
         levels: 0,
-        profilePicture: "",
     });
 
     useEffect(() => {
@@ -35,7 +35,6 @@ export default function TopNavbar() {
                     name: data.name,
                     points: data.points,
                     levels: data.levels,
-                    profilePicture: data.profilePicture || "img/profile.svg",
                 });
             })
             .catch((error) => console.error("Erro ao buscar dados:", error));
@@ -44,12 +43,8 @@ export default function TopNavbar() {
     return (
         <div className="w-full bg-gray-900 h-20 flex items-center justify-end gap-4 pr-6">
             <div className="w-80 h-3/5 rounded-xl bg-black flex items-center justify-between border border-blue-400">
-                <div className="w-8 h-8 rounded-full ml-4 flex items-center justify-center border border-blue-400">
-                    <img
-                        src={userData.profilePicture}
-                        className="w-5"
-                        alt="profile"
-                    />
+                <div className="w-8 h-8 rounded-full ml-4 flex items-center justify-center border border-blue-400 text-white">
+                    <User />
                 </div>
                 <p className="text-white text-sm">{userData.name}</p>
                 <div className="h-full w-1/4 rounded-r-xl flex items-center justify-center border-l border-blue-400">
