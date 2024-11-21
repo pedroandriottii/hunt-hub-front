@@ -24,8 +24,8 @@ export default function Signin() {
     }
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
-        e.preventDefault()
-        setError(null)
+        e.preventDefault();
+        setError(null);
 
         try {
             const response = await fetch('http://localhost:8080/users/login', {
@@ -34,20 +34,29 @@ export default function Signin() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData),
-            })
+            });
 
             if (!response.ok) {
-                throw new Error('Erro ao fazer login')
+                throw new Error('Erro ao fazer login');
             }
-            console.log(response)
-            const accessToken = await response.text()
-            console.log(accessToken)
-            localStorage.setItem('accessToken', accessToken)
-            router.push('/home')
+
+            const data = await response.json();
+
+            const { token, role, id } = data;
+            localStorage.setItem('accessToken', token);
+            localStorage.setItem('role', role);
+            localStorage.setItem('userId', id);
+
+            console.log('Role:', localStorage.getItem('role'));
+            console.log('Token:', localStorage.getItem('accessToken'));
+            console.log('User ID:', localStorage.getItem('userId'));
+
+            router.push('/home');
         } catch (err) {
-            console.error(err)
+            console.error(err);
         }
-    }
+    };
+
 
     return (
         <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
