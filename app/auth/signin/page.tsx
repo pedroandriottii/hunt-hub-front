@@ -1,27 +1,27 @@
 'use client'
 
-import { useState } from 'react'
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Label } from "@radix-ui/react-label"
-import Link from "next/link"
-import { useRouter } from 'next/navigation'
+import { useState } from 'react';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@radix-ui/react-label";
+import Link from "next/link";
+import { useRouter } from 'next/navigation';
 
 export default function Signin() {
-    const router = useRouter()
+    const router = useRouter();
     const [formData, setFormData] = useState({
         email: '',
-        password: ''
-    })
-    const [error, setError] = useState(null)
+        password: '',
+    });
+    const [error, setError] = useState(null);
 
     const handleInputChange = (e: { target: { id: any; value: any } }) => {
-        const { id, value } = e.target
-        setFormData(prev => ({
+        const { id, value } = e.target;
+        setFormData((prev) => ({
             ...prev,
-            [id]: value
-        }))
-    }
+            [id]: value,
+        }));
+    };
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
@@ -37,18 +37,15 @@ export default function Signin() {
             });
 
             if (!response.ok) {
-                throw new Error('Erro ao fazer login')
+                throw new Error('Erro ao fazer login');
             }
-            console.log(response)
-            const accessToken = await response.text()
-            console.log(accessToken)
-            localStorage.setItem('accessToken', accessToken)
-            router.push('/home')
+            const accessToken = await response.text();
+            localStorage.setItem('accessToken', accessToken);
+            router.push('/home');
         } catch (err) {
             console.error(err);
         }
     };
-
 
     return (
         <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
@@ -98,7 +95,9 @@ export default function Signin() {
                     </div>
                 </div>
             </div>
-            <div className="hidden bg-muted lg:block"></div>
+            <div className="hidden lg:flex items-center justify-center bg-muted">
+                <img src="/signIn.svg" alt="SignIn Illustration" className="max-w-[400px]" />
+            </div>
         </div>
-    )
+    );
 }
