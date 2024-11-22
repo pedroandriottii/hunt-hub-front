@@ -16,6 +16,15 @@ export default function HunterPage() {
         email: '',
         password: '',
         username: '',
+        linkPortfolio: '',
+        bio: 'N/A',
+        profilePicture: '',
+        certifications: [],
+        links: [],
+        achievements: [],
+        projects: [],
+        rating: 5,
+        level: 0,
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
