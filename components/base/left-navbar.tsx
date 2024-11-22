@@ -7,7 +7,7 @@ function logout() {
   localStorage.removeItem('role');
   localStorage.removeItem('userId');
 
-  window.location.href = '/auth/login';
+  window.location.href = '/';
 }
 
 export default function LeftNavbar() {

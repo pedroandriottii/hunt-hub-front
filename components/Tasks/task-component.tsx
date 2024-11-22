@@ -1,5 +1,6 @@
 import { UUID } from "crypto";
 import { Star } from "lucide-react";
+import Image from 'next/image';
 
 export interface TaskSummary {
   title: string;
@@ -57,7 +58,7 @@ export default function Task({ title, description, reward, tags, ratingRequired,
           </button>
         </div>
         <div className="flex items-center gap-2">
-          <img src="/img/gold.svg" className="h-5 w-5" alt="" />
+          <Image src="/img/gold.svg" width={5} height={5} className="h-5 w-5" alt="" />
           <span className="text-lg font-semibold">R$ {reward / 10}</span>
           <span className="text-sm text-gray-400">({reward} gold)</span>
         </div>
