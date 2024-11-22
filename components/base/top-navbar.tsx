@@ -1,6 +1,7 @@
 'use client';
 import { User } from "lucide-react";
 import { useEffect, useState } from "react";
+import Image from 'next/image';
 
 export default function TopNavbar() {
     const [userData, setUserData] = useState({
@@ -52,7 +53,7 @@ export default function TopNavbar() {
                 </div>
             </div>
             <div className="w-28 h-3/5 rounded-xl bg-black flex items-center px-3 justify-between border border-blue-400">
-                <img src="img/gold.svg" className="w-6 h-6" alt="gold" />
+                <Image src="img/gold.svg" width={6} height={6} className="w-6 h-6" alt="gold" />
                 <p className="text-white text-sm">{userData.points}</p>
             </div>
         </div>

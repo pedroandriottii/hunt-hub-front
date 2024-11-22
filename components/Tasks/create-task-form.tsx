@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import Select from 'react-select'
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from '@/hooks/use-toast'
-import MultiSelect from '../ui/select'
 
 interface CreateTaskFormProps {
     poid: string;
@@ -59,7 +59,7 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
     })
 
     async function onSubmit(values: FormValues) {
-        setIsLoading(true)
+        setIsLoading(true);
         try {
             const response = await fetch(`http://localhost:8080/task/${poid}`, {
                 method: 'POST',
@@ -68,25 +68,25 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
                 },
                 body: JSON.stringify(values),
-            })
-
+            });
+    
             if (!response.ok) {
-                throw new Error('Falha ao criar a task')
+                throw new Error('Falha ao criar a task');
             }
-
+    
             toast({
                 title: "Task criada com sucesso!",
                 description: "A nova task foi adicionada ao sistema.",
-            })
-            onSuccess()
-        } catch (error) {
+            });
+            onSuccess();
+        } catch {
             toast({
                 title: "Erro ao criar a task",
                 description: "Ocorreu um erro ao tentar criar a task. Tente novamente.",
                 variant: "destructive",
-            })
+            });
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }
 
@@ -152,15 +152,25 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
                 <FormField
                     control={form.control}
                     name="tags"
-                    rules={{ required: "Pelo menos uma tag é necessária" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Tags</FormLabel>
                             <FormControl>
-                                <MultiSelect
-                                    options={TagsEnum}
-                                    value={field.value || []}
-                                    onChange={(values) => field.onChange(values)}
+                                <Select
+                                    options={TagsEnum.map(tag => ({ value: tag, label: tag }))}
+                                    isMulti
+                                    onChange={(selected) => field.onChange(selected.map(option => option.value))}
+                                    value={field.value.map(tag => ({ value: tag, label: tag }))}
+                                    placeholder="Selecione uma ou mais tags"
+                                    className="react-select-container"
+                                    classNamePrefix="react-select"
+                                    styles={{
+                                        menu: base => ({
+                                            ...base,
+                                            maxHeight: "200px",
+                                            overflowY: "auto"
+                                        })
+                                    }}
                                 />
                             </FormControl>
                             <FormMessage />

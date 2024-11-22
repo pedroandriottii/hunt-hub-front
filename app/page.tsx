@@ -31,10 +31,10 @@ export default function Home() {
         </p>
         <div className="flex items-center justify-around w-2/3 font-bold">
           <Link href={'/auth/hunter-signup'}>
-            <RainbowButton children="Encontre um Trabalho" className="bg-white" />
+            <RainbowButton className="bg-white">Encontre um Trabalho</RainbowButton>
           </Link>
           <Link href={'/auth/po-signup'}>
-            <RainbowButton children="Procure um Talento" className="bg-white" />
+            <RainbowButton className="bg-white">Procure um Talento</RainbowButton>
           </Link>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@radix-ui/react-label";
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import PublicNavbar from '@/components/base/public-navbar';
 
 export default function PoPage() {
@@ -124,7 +125,7 @@ export default function PoPage() {
                     </div>
                 </div>
                 <div className="hidden lg:flex items-center justify-center bg-muted">
-                    <img src="/po.svg" alt="PO Illustration" className="max-w-[400px]" />
+                    <Image src="/po.svg" width={400} height={400} alt="PO Illustration" className="max-w-[400px]" />
                 </div>
             </div>
         </div>

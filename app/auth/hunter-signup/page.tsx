@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@radix-ui/react-label";
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import PublicNavbar from '@/components/base/public-navbar';
 
 export default function HunterPage() {
@@ -124,7 +125,7 @@ export default function HunterPage() {
                     </div>
                 </div>
                 <div className="hidden lg:flex items-center justify-center bg-muted">
-                    <img src="/hunter.svg" alt="Hunter Illustration" className="max-w-[400px]" />
+                    <Image src="/hunter.svg" width={400} height={400} alt="Hunter Illustration" className="max-w-[400px]" />
                 </div>
             </div>
         </div>
