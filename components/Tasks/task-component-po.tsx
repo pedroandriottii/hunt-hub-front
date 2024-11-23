@@ -9,10 +9,9 @@ export interface TaskSummary {
   tags: string[];
   ratingRequired: number;
   id: UUID;
-  onApply: (taskId: UUID) => void;
 }
 
-export default function Task({ title, description, reward, tags, ratingRequired, id, onApply }: TaskSummary) {
+export default function TaskPO({ title, description, reward, tags, ratingRequired }: TaskSummary) {
   const displayedTags = tags.slice(0, 3);
   const hasMoreTags = tags.length > 3;
 
@@ -48,13 +47,10 @@ export default function Task({ title, description, reward, tags, ratingRequired,
       <div className="flex justify-between items-center flex-row-reverse">
         <div className="flex items-center gap-4">
           <button className="text-blue-400 hover:text-blue-300 text-sm transition-colors">
-            View more
+            Ver Mais
           </button>
-          <button
-            className="bg-blue-600 hover:bg-blue-700 transition-colors px-3 text-sm py-2 rounded-lg"
-            onClick={() => onApply(id)} // Usa a função passada como prop
-          >
-            Apply
+          <button className="bg-blue-600 hover:bg-blue-700 transition-colors px-3 text-sm py-2 rounded-lg">
+            Ver Hunters Aplicados
           </button>
         </div>
         <div className="flex items-center gap-2">

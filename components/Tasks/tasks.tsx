@@ -1,8 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Task from "./task-component";
-import { TaskSummary } from "./task-component";
+import Task from "./task-component-hunter";
+import { TaskSummary } from "./task-component-hunter";
+import TaskPO from "./task-component-po"; // Import do componente para PO
 import { UUID } from "crypto";
+
 interface TaskApiResponse {
   title: string;
   description: string;
@@ -14,11 +16,33 @@ interface TaskApiResponse {
 
 export default function Tasks() {
   const [taskSummaries, setTaskSummaries] = useState<TaskSummary[]>([]);
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
-    const getAllTasks = async () => {
+    const roleFromStorage = localStorage.getItem("role");
+    setRole(roleFromStorage);
+
+    const fetchTasks = async () => {
       try {
-        const res = await fetch("http://localhost:8080/task");
+        if (!roleFromStorage) {
+          console.error("Role is not defined in localStorage.");
+          return;
+        }
+
+        let url = "http://localhost:8080/task";
+        if (roleFromStorage === "ROLE_PO") {
+          const userId = localStorage.getItem("userId");
+          if (!userId) {
+            throw new Error("User ID is missing in localStorage.");
+          }
+          url = `http://localhost:8080/task/po/${userId}`;
+        }
+
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error(`Failed to fetch tasks: ${res.statusText}`);
+        }
+
         const data: TaskApiResponse[] = await res.json();
 
         const summaries: TaskSummary[] = data.map((task) => ({
@@ -38,7 +62,7 @@ export default function Tasks() {
       }
     };
 
-    getAllTasks();
+    fetchTasks();
   }, []);
 
   const handleApply = async (taskId: UUID) => {
@@ -74,11 +98,18 @@ export default function Tasks() {
     <div className="w-full">
       <div className="grid grid-cols-3 gap-2">
         {taskSummaries.map((taskSummary, index) => (
-          <Task
-            key={`${taskSummary.id}-${index}`}
-            {...taskSummary}
-            onApply={handleApply}
-          />
+          role === "ROLE_HUNTER" ? (
+            <Task
+              key={`${taskSummary.id}-${index}`}
+              {...taskSummary}
+              onApply={handleApply}
+            />
+          ) : (
+            <TaskPO
+              key={`${taskSummary.id}-${index}`}
+              {...taskSummary}
+            />
+          )
         ))}
       </div>
     </div>
