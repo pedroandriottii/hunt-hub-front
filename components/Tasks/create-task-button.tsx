@@ -19,11 +19,11 @@ export function CreateTaskButton({ poid, userRole }: CreateTaskButtonProps) {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button>Criar Task</Button>
+                <Button>Create Task</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Criar Nova Task</DialogTitle>
+                    <DialogTitle>Create New Task</DialogTitle>
                 </DialogHeader>
                 <CreateTaskForm poid={poid} onSuccess={() => setIsOpen(false)} />
             </DialogContent>

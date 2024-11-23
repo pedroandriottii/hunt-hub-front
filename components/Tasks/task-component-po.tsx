@@ -1,19 +1,29 @@
-import { UUID } from "crypto";
-import { Star } from "lucide-react";
-import Image from 'next/image';
+"use client"
+
+import { UUID } from "crypto"
+import { Star } from 'lucide-react'
+import Image from 'next/image'
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { TaskHuntersAppliedPopup } from "./task-hunters-applied"
 
 export interface TaskSummary {
-  title: string;
-  description: string;
-  reward: number;
-  tags: string[];
-  ratingRequired: number;
-  id: UUID;
+  title: string
+  description: string
+  reward: number
+  tags: string[]
+  ratingRequired: number
+  id: UUID
 }
 
-export default function TaskPO({ title, description, reward, tags, ratingRequired }: TaskSummary) {
-  const displayedTags = tags.slice(0, 3);
-  const hasMoreTags = tags.length > 3;
+export default function TaskPO({ title, description, reward, tags, ratingRequired, id }: TaskSummary) {
+  const [isPopupOpen, setIsPopupOpen] = useState(false)
+  const displayedTags = tags.slice(0, 3)
+  const hasMoreTags = tags.length > 3
+
+  const handleViewHunters = () => {
+    setIsPopupOpen(true)
+  }
 
   return (
     <div className="w-full h-56 bg-gray-950 rounded-xl p-5 flex flex-col justify-between text-white">
@@ -46,12 +56,16 @@ export default function TaskPO({ title, description, reward, tags, ratingRequire
       </div>
       <div className="flex justify-between items-center flex-row-reverse">
         <div className="flex items-center gap-4">
-          <button className="text-blue-400 hover:text-blue-300 text-sm transition-colors">
-            Ver Mais
-          </button>
-          <button className="bg-blue-600 hover:bg-blue-700 transition-colors px-3 text-sm py-2 rounded-lg">
-            Ver Hunters Aplicados
-          </button>
+          <Button className="text-blue-400 hover:text-blue-300 text-sm transition-colors">
+            View More
+          </Button>
+          <Button
+            variant="default"
+            className="bg-blue-600 hover:bg-blue-700 transition-colors px-3 text-sm py-2 rounded-lg"
+            onClick={handleViewHunters}
+          >
+            View Applied
+          </Button>
         </div>
         <div className="flex items-center gap-2">
           <Image src="/img/gold.svg" width={5} height={5} className="h-5 w-5" alt="" />
@@ -59,6 +73,11 @@ export default function TaskPO({ title, description, reward, tags, ratingRequire
           <span className="text-sm text-gray-400">({reward} gold)</span>
         </div>
       </div>
+      <TaskHuntersAppliedPopup
+        taskId={id.toString()}
+        isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+      />
     </div>
-  );
+  )
 }

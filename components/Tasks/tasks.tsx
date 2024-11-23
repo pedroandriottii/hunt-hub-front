@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Task from "./task-component-hunter";
 import { TaskSummary } from "./task-component-hunter";
-import TaskPO from "./task-component-po"; // Import do componente para PO
+import TaskPO from "./task-component-po";
 import { UUID } from "crypto";
 
 interface TaskApiResponse {

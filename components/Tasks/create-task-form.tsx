@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import Select from 'react-select'
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from '@/hooks/use-toast'
-import MultiSelect from '../ui/select'
 
 interface CreateTaskFormProps {
     poid: string;
@@ -71,24 +71,24 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
             });
     
             if (!response.ok) {
-                throw new Error('Falha ao criar a task');
+                throw new Error('Failed to create task');
             }
     
             toast({
-                title: "Task criada com sucesso!",
-                description: "A nova task foi adicionada ao sistema.",
+                title: "Task created successfully!",
+                description: "The new task was added to the system.",
             });
             onSuccess();
         } catch {
             toast({
-                title: "Erro ao criar a task",
-                description: "Ocorreu um erro ao tentar criar a task. Tente novamente.",
+                title: "Error creating task",
+                description: "An error occurred when trying to create the task. Please try again.",
                 variant: "destructive",
             });
         } finally {
             setIsLoading(false);
         }
-    }    
+    }
 
     return (
         <Form {...form}>
@@ -96,12 +96,12 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
                 <FormField
                     control={form.control}
                     name="title"
-                    rules={{ required: "Título é obrigatório" }}
+                    rules={{ required: "Title is required" }}
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Título</FormLabel>
+                            <FormLabel>Title</FormLabel>
                             <FormControl>
-                                <Input placeholder="Título da task" {...field} />
+                                <Input placeholder="Task Title" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -110,12 +110,12 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
                 <FormField
                     control={form.control}
                     name="description"
-                    rules={{ required: "Descrição é obrigatória" }}
+                    rules={{ required: "Description is required" }}
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Descrição</FormLabel>
+                            <FormLabel>Description</FormLabel>
                             <FormControl>
-                                <Textarea placeholder="Descrição da task" {...field} />
+                                <Textarea placeholder="Task Description" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -124,10 +124,10 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
                 <FormField
                     control={form.control}
                     name="deadline"
-                    rules={{ required: "Prazo é obrigatório" }}
+                    rules={{ required: "Deadline é required" }}
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Prazo</FormLabel>
+                            <FormLabel>Deadline</FormLabel>
                             <FormControl>
                                 <Input type="datetime-local" {...field} />
                             </FormControl>
@@ -138,10 +138,10 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
                 <FormField
                     control={form.control}
                     name="reward"
-                    rules={{ required: "Recompensa é obrigatória", min: { value: 1, message: "A recompensa deve ser maior que 0" } }}
+                    rules={{ required: "Reward is required", min: { value: 1, message: "The Reward required must be greater than 0" } }}
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Recompensa</FormLabel>
+                            <FormLabel>Reward</FormLabel>
                             <FormControl>
                                 <Input type="number" min="1" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
                             </FormControl>
@@ -152,15 +152,25 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
                 <FormField
                     control={form.control}
                     name="tags"
-                    rules={{ required: "Pelo menos uma tag é necessária" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Tags</FormLabel>
                             <FormControl>
-                                <MultiSelect
-                                    options={TagsEnum}
-                                    value={field.value || []}
-                                    onChange={(values) => field.onChange(values)}
+                                <Select
+                                    options={TagsEnum.map(tag => ({ value: tag, label: tag }))}
+                                    isMulti
+                                    onChange={(selected) => field.onChange(selected.map(option => option.value))}
+                                    value={field.value.map(tag => ({ value: tag, label: tag }))}
+                                    placeholder="Select one or more tags"
+                                    className="react-select-container"
+                                    classNamePrefix="react-select"
+                                    styles={{
+                                        menu: base => ({
+                                            ...base,
+                                            maxHeight: "200px",
+                                            overflowY: "auto"
+                                        })
+                                    }}
                                 />
                             </FormControl>
                             <FormMessage />
@@ -169,7 +179,7 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
                 />
 
                 <Button type="submit" disabled={isLoading}>
-                    {isLoading ? "Criando..." : "Criar Task"}
+                    {isLoading ? "Creating..." : "Create Task"}
                 </Button>
             </form>
         </Form>
