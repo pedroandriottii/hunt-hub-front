@@ -1,17 +1,56 @@
 "use client";
+
 import { useToast } from '@/hooks/use-toast';
 import React, { useEffect, useState } from 'react';
-import { Badge } from "@/components/ui/badge"
-import { Card } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { StarFilledIcon, StarIcon } from "@radix-ui/react-icons"
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { StarFilledIcon, StarIcon } from "@radix-ui/react-icons";
+import { Skeleton } from "@/components/ui/skeleton";
+
+interface Achievement {
+  id: number;
+  name: string;
+  description: string;
+}
+
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  deadline: Date;
+  reward: number;
+  numberOfMeetings: number;
+  numberOfHuntersRequired: number;
+  ratingRequired: number;
+}
+
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  startDate: Date;
+  endDate: Date;
+  skills: string[];
+}
 
 interface HunterProfile {
   id: string;
   name: string;
-  age: number;
-  experience: string;
+  email: string;
+  points: number;
+  bio: string;
+  profilePicture: string;
+  achievements: Achievement[];
+  certifications: string[];
+  levels: number;
+  linkPortfolio: string;
+  projects: Project[];
+  rating: number;
+  ratingCount: number;
+  tasks: Task[];
+  totalRating: number;
 }
 
 const HunterProfilePage: React.FC = () => {
@@ -35,10 +74,6 @@ const HunterProfilePage: React.FC = () => {
           }
         });
 
-        toast({
-          title: 'Profile loaded successfully',
-          description: 'The hunter profile was loaded successfully'
-        });
         const data: HunterProfile = await response.json();
         setProfile(data);
       } catch (error) {
@@ -47,91 +82,117 @@ const HunterProfilePage: React.FC = () => {
           description: 'An error occurred when trying to load the hunter profile. Please try again.',
           variant: 'destructive'
         });
-        console.log(error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProfile();
-  }, []);
+  }, [toast]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <ProfileSkeleton />;
+  }
+
+  if (!profile) {
+    return <div className="text-center p-6">No profile data available</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-100/40 p-6">
+    <div className="bg-gray-100 p-6">
       <div className="mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Main Content */}
         <div className="md:col-span-2 space-y-6">
-          {/* Profile Header */}
-          <Card className="p-6">
-            <div className="flex items-start gap-6">
-              <Avatar className="h-24 w-24">
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback>{profile?.name.slice(0, 2).toUpperCase()}</AvatarFallback>
-              </Avatar>
-              <div className="space-y-2">
-                <h1 className="text-2xl font-bold">{profile?.name}</h1>
-                <p className="text-muted-foreground">
-                  {profile?.experience || "No experience provided"}
-                </p>
-                <div className="flex gap-2">
-                  <Badge variant="secondary">Hunter</Badge>
+          <Card>
+            <CardContent className="p-6 pt-6">
+              <div className="flex items-start gap-6">
+                <Avatar className="h-24 w-24">
+                  <AvatarImage src={profile.profilePicture || "/placeholder.svg"} alt={profile.name} />
+                  <AvatarFallback>{profile.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <div className="space-y-2">
+                  <h1 className="text-2xl font-bold">{profile.name}</h1>
+                  <p className="text-muted-foreground">{profile.bio || "Hey there, I'm a dev currently located in Recife, Brazil, studying computer science at CESAR school!"}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.certifications.map((cert, index) => (
+                      <Badge key={index} variant="secondary">{cert}</Badge>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            </CardContent>
           </Card>
 
-          {/* Tasks Section */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Completed Tasks (0)</h2>
-            <p className="text-muted-foreground">No tasks completed yet</p>
+          <Card>
+            <CardContent className="pt-6">
+              <h2 className="text-xl font-semibold mb-4">Completed Tasks ({profile.tasks.length})</h2>
+              <div className="space-y-4">
+                {profile.tasks.length === 0 ? (
+                  <p className="text-muted-foreground">No tasks completed yet</p>
+                ) : (
+                  profile.tasks.map((task) => (
+                    <Card key={task.id}>
+                      <CardContent className="p-4">
+                        <h3 className="font-medium">{task.title}</h3>
+                        <p className="text-sm text-muted-foreground">{task.description}</p>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
+              </div>
+            </CardContent>
           </Card>
         </div>
 
-        {/* Sidebar */}
         <div className="space-y-6">
-          {/* Level Card */}
-          <Card className="p-6">
-            <div className="text-center">
+          <Card>
+            <CardContent className="pt-6 text-center">
               <div className="inline-flex items-center justify-center rounded-full bg-gray-100 p-4 mb-4">
-                <span className="text-3xl font-bold">Lvl 1</span>
+                <span className="text-3xl font-bold">Lvl {profile.levels}</span>
               </div>
-              <h2 className="text-xl font-semibold">Beginner</h2>
+              <h2 className="text-xl font-semibold">Legend</h2>
               <div className="flex justify-center gap-1 mt-2">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  i < 1 ? (
+                  i < Math.round(profile.rating) ? (
                     <StarFilledIcon key={i} className="h-5 w-5 text-yellow-500" />
                   ) : (
                     <StarIcon key={i} className="h-5 w-5 text-gray-300" />
                   )
                 ))}
               </div>
-            </div>
+            </CardContent>
           </Card>
 
-          {/* Links Card */}
-          <Card className="p-6">
-            <div className="space-y-2">
-              <Button variant="outline" className="w-full justify-start">
-                Contact {profile?.name}
+          <Card>
+            <CardContent className="pt-6">
+              <div className="space-y-2">
+                <Button variant="outline" className="w-full justify-start">
+                  {profile.email}
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  {profile.linkPortfolio}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-6">
+              <h2 className="text-xl font-semibold mb-4">Achievements</h2>
+              <div className="grid grid-cols-3 gap-4">
+                {profile.achievements.slice(0, 9).map((achievement) => (
+                  <div key={achievement.id} className="aspect-square rounded-full bg-gray-100 flex items-center justify-center">
+                    <span className="text-xs text-center p-1">{achievement.name}</span>
+                  </div>
+                ))}
+                {Array.from({ length: Math.max(0, 9 - profile.achievements.length) }).map((_, i) => (
+                  <div key={i} className="aspect-square rounded-full bg-gray-100" />
+                ))}
+              </div>
+              <Button variant="ghost" className="w-full mt-4">
+                View More
               </Button>
-            </div>
-          </Card>
-
-          {/* Achievements Card */}
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Achievements</h2>
-            <div className="grid grid-cols-3 gap-4">
-              {Array.from({ length: 9 }).map((_, i) => (
-                <div key={i} className="aspect-square rounded-full bg-gray-100" />
-              ))}
-            </div>
-            <Button variant="ghost" className="w-full mt-4">
-              View More
-            </Button>
+            </CardContent>
           </Card>
         </div>
       </div>
@@ -139,4 +200,60 @@ const HunterProfilePage: React.FC = () => {
   );
 };
 
+const ProfileSkeleton: React.FC = () => (
+  <div className="min-h-screen bg-gray-100 p-6 pt-6">
+    <div className="mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="md:col-span-2 space-y-6">
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-start gap-6">
+              <Skeleton className="h-24 w-24 rounded-full" />
+              <div className="space-y-2 flex-1">
+                <Skeleton className="h-8 w-1/2" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-6 space-y-4">
+            <Skeleton className="h-6 w-1/4" />
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+      <div className="space-y-6">
+        <Card>
+          <CardContent className="p-6 text-center">
+            <Skeleton className="h-16 w-16 rounded-full mx-auto mb-4" />
+            <Skeleton className="h-6 w-1/2 mx-auto" />
+            <Skeleton className="h-4 w-1/4 mx-auto mt-2" />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-6 space-y-2">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-6">
+            <Skeleton className="h-6 w-1/2 mb-4" />
+            <div className="grid grid-cols-3 gap-4">
+              {Array.from({ length: 9 }).map((_, i) => (
+                <Skeleton key={i} className="aspect-square rounded-full" />
+              ))}
+            </div>
+            <Skeleton className="h-10 w-full mt-4" />
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  </div>
+);
+
 export default HunterProfilePage;
+
