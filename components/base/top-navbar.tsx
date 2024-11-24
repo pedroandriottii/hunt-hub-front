@@ -15,8 +15,8 @@ export default function TopNavbar() {
         const id = localStorage.getItem("userId");
         const token = localStorage.getItem("accessToken");
         const url = role === "ROLE_PO"
-            ? `http://localhost:8080/po/${id}`
-            : `http://localhost:8080/hunters/${id}`;
+            ? `http://localhost:8080/api/po/${id}`
+            : `http://localhost:8080/api/hunters/${id}`;
 
         fetch(url, {
             method: "GET",

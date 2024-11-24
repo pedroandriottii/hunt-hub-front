@@ -61,7 +61,7 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
     async function onSubmit(values: FormValues) {
         setIsLoading(true);
         try {
-            const response = await fetch(`http://localhost:8080/task/${poid}`, {
+            const response = await fetch(`http://localhost:8080/api/task/${poid}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

@@ -29,13 +29,13 @@ export default function Tasks() {
           return;
         }
 
-        let url = "http://localhost:8080/task";
+        let url = "http://localhost:8080/api/task";
         if (roleFromStorage === "ROLE_PO") {
           const userId = localStorage.getItem("userId");
           if (!userId) {
             throw new Error("User ID is missing in localStorage.");
           }
-          url = `http://localhost:8080/task/po/${userId}`;
+          url = `http://localhost:8080/api/task/po/${userId}`;
         }
 
         const res = await fetch(url);
@@ -74,7 +74,7 @@ export default function Tasks() {
         throw new Error("Missing access token or hunter ID.");
       }
 
-      const response = await fetch(`http://localhost:8080/task/${taskId}/applying/${hunterId}`, {
+      const response = await fetch(`http://localhost:8080/api/task/${taskId}/applying/${hunterId}`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,

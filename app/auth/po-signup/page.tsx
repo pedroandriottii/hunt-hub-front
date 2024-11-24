@@ -30,7 +30,7 @@ export default function PoPage() {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:8080/po', {
+            const response = await fetch('http://localhost:8080/api/po', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

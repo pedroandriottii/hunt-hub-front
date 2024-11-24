@@ -39,7 +39,7 @@ export default function HunterPage() {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:8080/hunters', {
+            const response = await fetch('http://localhost:8080/api/hunters', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

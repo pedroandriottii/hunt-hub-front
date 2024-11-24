@@ -43,7 +43,7 @@ export default function TaskDetails() {
     if (!id) return;
   
     try {
-      const res = await fetch(`http://localhost:8080${id}`);
+      const res = await fetch(`http://localhost:8080/api${id}`);
       if (!res.ok) {
         throw new Error(`Failed to fetch task details: ${res.statusText}`);
       }

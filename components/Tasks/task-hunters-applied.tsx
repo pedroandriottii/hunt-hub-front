@@ -31,7 +31,7 @@ export function TaskHuntersAppliedPopup({ taskId, isOpen, onClose }: TaskHunters
           throw new Error("Task ID is missing.")
         }
 
-        const res = await fetch(`http://localhost:8080/task/${taskId}/hunters`)
+        const res = await fetch(`http://localhost:8080/api/task/${taskId}/hunters`)
 
         if (res.status === 204 || res.status === 404 || !res.ok) {
           setHunters([])
