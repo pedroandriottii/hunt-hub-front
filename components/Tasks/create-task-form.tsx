@@ -92,7 +92,7 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-2 gap-6 md:gap-8 lg:gap-10">
                 <FormField
                     control={form.control}
                     name="title"
@@ -129,7 +129,7 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
                         <FormItem>
                             <FormLabel>Deadline</FormLabel>
                             <FormControl>
-                                <Input type="datetime-local" {...field} />
+                                <Input type="date" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -149,6 +149,78 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
                                 <Input
                                     type="number"
                                     min="1"
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseInt(e.target.value))}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="numberOfMeetings"
+                    rules={{
+                        required: "Number of meetings is required",
+                        min: { value: 1, message: "Minimum value is 1" },
+                        max: { value: 5, message: "Maximum value is 5" },
+                    }}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Number of Meetings</FormLabel>
+                            <FormControl>
+                                <Input
+                                    type="number"
+                                    min="1"
+                                    max="5"
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseInt(e.target.value))}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="numberOfHuntersRequired"
+                    rules={{
+                        required: "Number of hunters is required",
+                        min: { value: 1, message: "Minimum value is 1" },
+                        max: { value: 5, message: "Maximum value is 5" },
+                    }}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Number of Hunters Required</FormLabel>
+                            <FormControl>
+                                <Input
+                                    type="number"
+                                    min="1"
+                                    max="5"
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseInt(e.target.value))}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="ratingRequired"
+                    rules={{
+                        required: "Rating required is required",
+                        min: { value: 1, message: "Minimum value is 1" },
+                        max: { value: 5, message: "Maximum value is 5" },
+                    }}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Rating Required</FormLabel>
+                            <FormControl>
+                                <Input
+                                    type="number"
+                                    min="1"
+                                    max="5"
                                     {...field}
                                     onChange={(e) => field.onChange(parseInt(e.target.value))}
                                 />

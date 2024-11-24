@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useState } from 'react';
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import Link from "next/link";
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import PublicNavbar from '@/components/base/public-navbar';
+import { FormError } from '@/components/base/formError';
 
 export default function Signin() {
     const router = useRouter();
@@ -15,7 +16,7 @@ export default function Signin() {
         email: '',
         password: '',
     });
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
@@ -23,9 +24,9 @@ export default function Signin() {
             ...prev,
             [id]: value,
         }));
-    };    
+    };
 
-    const handleSubmit = async (e: { preventDefault: () => void }) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
 
@@ -39,7 +40,8 @@ export default function Signin() {
             });
 
             if (!response.ok) {
-                throw new Error('Erro ao fazer login');
+                const errorResponse = await response.json();
+                throw new Error(errorResponse.message || 'Erro ao fazer login');
             }
 
             const data = await response.json();
@@ -49,13 +51,9 @@ export default function Signin() {
             localStorage.setItem('role', role);
             localStorage.setItem('userId', userId);
 
-            console.log(localStorage.getItem('accessToken'));
-            console.log(localStorage.getItem('role'));
-            console.log(localStorage.getItem('userId'));
-
             router.push('/home');
-        } catch (err) {
-            console.error(err);
+        } catch (err: any) {
+            setError(err.message); // Define a mensagem de erro para exibição
         }
     };
 
@@ -96,15 +94,18 @@ export default function Signin() {
                                     onChange={handleInputChange}
                                 />
                             </div>
-                            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+                            <FormError error={error || undefined} />
                             <Button type="submit" className="w-full">
                                 Entrar
                             </Button>
                         </form>
-                        <div className="text-center text-sm">
+                        <div className="text-center text-sm grid gri">
                             Ainda não tem conta?{" "}
-                            <Link href="/signup" className="underline">
-                                Cadastre-se
+                            <Link href="/auth/po-signup" className="underline">
+                                Cadastre-se como PO
+                            </Link>
+                            <Link href="/auth/hunter-signup" className="underline">
+                                Cadastre-se como Hunter
                             </Link>
                         </div>
                     </div>
@@ -112,7 +113,7 @@ export default function Signin() {
                 <div className="hidden lg:flex items-center justify-center bg-muted">
                     <Image src="/signIn.svg" width={400} height={400} alt="SignIn Illustration" className="max-w-[400px]" />
                 </div>
-            </div>  
+            </div>
         </div>
     );
 }
