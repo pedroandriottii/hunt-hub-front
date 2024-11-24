@@ -7,13 +7,13 @@ import {
   AlertTriangle,
   UserPlus,
   ClipboardCheck,
-} from "lucide-react"; // Ícones do Lucide React
+} from "lucide-react"; 
 
 interface Notification {
   id: number;
   message: string;
   type: string;
-  theme: string; // Adicionei theme para usar no switch
+  theme: string; 
   createdAt: string;
 }
 
