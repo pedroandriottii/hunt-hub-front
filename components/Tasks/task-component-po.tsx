@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { TaskHuntersAppliedPopup } from "./task-hunters-applied"
+import Link from "next/link"
 
 export interface TaskSummary {
   title: string
@@ -56,9 +57,11 @@ export default function TaskPO({ title, description, reward, tags, ratingRequire
       </div>
       <div className="flex justify-between items-center flex-row-reverse">
         <div className="flex items-center gap-4">
-          <Button className="text-blue-400 hover:text-blue-300 text-sm transition-colors">
-            View More
-          </Button>
+          <Link href={`/task/${id}`}>
+            <Button className="text-blue-400 hover:text-blue-300 text-sm transition-colors">
+              View More
+            </Button>
+          </Link>
           <Button
             variant="default"
             className="bg-blue-600 hover:bg-blue-700 transition-colors px-3 text-sm py-2 rounded-lg"

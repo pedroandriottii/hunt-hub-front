@@ -7,6 +7,7 @@ import { Label } from "@radix-ui/react-label";
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import PublicNavbar from '@/components/base/public-navbar';
+import { FormError } from '@/components/base/formError';
 
 export default function PoPage() {
     const router = useRouter();
@@ -17,6 +18,7 @@ export default function PoPage() {
         password: '',
         username: '',
     });
+    const [error, setError] = useState<string | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -39,12 +41,14 @@ export default function PoPage() {
             });
 
             if (!response.ok) {
-                throw new Error('Erro ao enviar o formulário');
+                const errorResponse = await response.json();
+                throw new Error(errorResponse.message || 'Erro ao enviar o formulário');
             }
 
+            setError(null); // Limpa qualquer erro existente
             router.push('/auth/signin');
-        } catch (error) {
-            console.error('Erro:', error);
+        } catch (error: any) {
+            setError(error.message); // Define a mensagem de erro
         }
     };
 
@@ -118,6 +122,7 @@ export default function PoPage() {
                                     required
                                 />
                             </div>
+                            <FormError error={error || undefined} />
                             <Button type="submit" className="w-full">
                                 Cadastrar
                             </Button>
@@ -129,6 +134,5 @@ export default function PoPage() {
                 </div>
             </div>
         </div>
-
     );
 }

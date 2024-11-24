@@ -7,6 +7,7 @@ import { Label } from "@radix-ui/react-label";
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import PublicNavbar from '@/components/base/public-navbar';
+import { FormError } from '@/components/base/formError';
 
 export default function HunterPage() {
     const router = useRouter();
@@ -26,6 +27,7 @@ export default function HunterPage() {
         rating: 5,
         level: 0,
     });
+    const [error, setError] = useState<string | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -48,12 +50,14 @@ export default function HunterPage() {
             });
 
             if (!response.ok) {
-                throw new Error('Erro ao enviar o formulário');
+                const errorResponse = await response.json();
+                throw new Error(errorResponse.message || 'Erro ao enviar o formulário');
             }
 
+            setError(null);
             router.push('/auth/signin');
-        } catch (error) {
-            console.error('Erro:', error);
+        } catch (error: any) {
+            setError(error.message);
         }
     };
 
@@ -127,6 +131,7 @@ export default function HunterPage() {
                                     required
                                 />
                             </div>
+                            <FormError error={error || undefined} />
                             <Button type="submit" className="w-full">
                                 Cadastrar
                             </Button>
@@ -138,6 +143,5 @@ export default function HunterPage() {
                 </div>
             </div>
         </div>
-
     );
 }
