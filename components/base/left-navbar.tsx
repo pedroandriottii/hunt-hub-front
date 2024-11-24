@@ -1,5 +1,5 @@
 'use client'
-import { Bell, LogOut, Mail, Target, User } from "lucide-react";
+import { Bell, LogOut, Mail, Target, User, BookCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation"
 
@@ -22,6 +22,7 @@ export default function LeftNavbar() {
         <NavItem icon={Mail} label="Messages" />
         <NavItem icon={Bell} onClick={()=>router.push('/notifications')} label="Notifications" />
         <NavItem icon={User} onClick={()=>router.push('/profile')} label="Profile" />
+        <NavItem icon={BookCheck} onClick={()=>router.push('/mytasks')} label="My Tasks" />
         <NavItem
           icon={LogOut}
           label="Logout"

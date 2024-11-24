@@ -20,38 +20,39 @@ interface Notification {
 export default function Notifications() {
   const [data, setData] = useState<Notification[]>([]);
 
-  const getNotifications = async () => {
+const getNotifications = async () => {
     const userRole = localStorage.getItem("role");
     const userId = localStorage.getItem("userId");
+    const accessToken = localStorage.getItem("accessToken");
     let url: string;
 
     if (userRole === "ROLE_HUNTER") {
-      url = `http://localhost:8080/api/notifications/hunter/${userId}`;
+        url = `http://localhost:8080/api/notifications/hunter/${userId}`;
     } else {
-      url = `http://localhost:8080/api/notifications/po/${userId}`;
+        url = `http://localhost:8080/api/notifications/po/${userId}`;
     }
 
     try {
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
 
-      if (!response.ok) {
-        throw new Error("Erro ao buscar notificações");
-      }
+        if (!response.ok) {
+            throw new Error("Erro ao buscar notificações");
+        }
 
-      const notifications: Notification[] = await response.json();
-      console.log("Notificações recebidas:", notifications);
+        const notifications: Notification[] = await response.json();
+        console.log("Notificações recebidas:", notifications);
 
-      setData(notifications);
+        setData(notifications);
     } catch (err) {
-      console.error("Erro ao buscar notificações:", err);
+        console.error("Erro ao buscar notificações:", err);
     }
-  };
+};
 
   useEffect(() => {
     getNotifications();
