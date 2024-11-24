@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { TaskSummary } from "@/components/Tasks/task-component-hunter";
+import { TaskExpanded } from "@/components/Tasks/task-component-hunter";
 import { Star, User, Tag, Calendar, Users, Clock, CheckCircle, AlertCircle, HelpCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button"
 import { handleApply } from "@/components/Tasks/tasks";
@@ -31,7 +31,7 @@ interface Po {
   bio: string;
 }
 
-interface TaskDetailsProps extends TaskSummary {
+interface TaskDetailsProps extends TaskExpanded {
   po: Po;
   hunters: Hunter[];
 }

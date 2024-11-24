@@ -12,6 +12,7 @@ interface TaskApiResponse {
   tags: string[];
   id: UUID;
   ratingRequired: number;
+  
 }
 
 export const handleApply = async (taskId: UUID) => {
