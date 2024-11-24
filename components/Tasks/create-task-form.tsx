@@ -1,11 +1,11 @@
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import Select from 'react-select'
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { useToast } from '@/hooks/use-toast'
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import MultiSelect from "@/components/ui/select";
 
 interface CreateTaskFormProps {
     poid: string;
@@ -27,7 +27,7 @@ export const TagsEnum = [
     "HISTORICAL_DATA", "MYSQL", "KAFKA", "REINFORCEMENT_LEARNING",
     "ARTIFICIAL_INTELLIGENCE", "BIG_DATA", "POSTGRESQL", "AWS", "CSHARP",
     "GO", "IOS", "BACKEND", "REACT_NATIVE", "APACHE_ACTIVEMQ", "ORACLE",
-    "COMPUTER_VISION", "MICROSERVICES", "REST"
+    "COMPUTER_VISION", "MICROSERVICES", "REST",
 ];
 
 interface FormValues {
@@ -42,8 +42,8 @@ interface FormValues {
 }
 
 export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
-    const [isLoading, setIsLoading] = useState(false)
-    const { toast } = useToast()
+    const [isLoading, setIsLoading] = useState(false);
+    const { toast } = useToast();
 
     const form = useForm<FormValues>({
         defaultValues: {
@@ -56,24 +56,24 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
             ratingRequired: 1,
             tags: [],
         },
-    })
+    });
 
     async function onSubmit(values: FormValues) {
         setIsLoading(true);
         try {
             const response = await fetch(`http://localhost:8080/task/${poid}`, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 },
                 body: JSON.stringify(values),
             });
-    
+
             if (!response.ok) {
-                throw new Error('Failed to create task');
+                throw new Error("Failed to create task");
             }
-    
+
             toast({
                 title: "Task created successfully!",
                 description: "The new task was added to the system.",
@@ -124,7 +124,7 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
                 <FormField
                     control={form.control}
                     name="deadline"
-                    rules={{ required: "Deadline é required" }}
+                    rules={{ required: "Deadline is required" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Deadline</FormLabel>
@@ -138,12 +138,20 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
                 <FormField
                     control={form.control}
                     name="reward"
-                    rules={{ required: "Reward is required", min: { value: 1, message: "The Reward required must be greater than 0" } }}
+                    rules={{
+                        required: "Reward is required",
+                        min: { value: 1, message: "Reward must be greater than 0" },
+                    }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Reward</FormLabel>
                             <FormControl>
-                                <Input type="number" min="1" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
+                                <Input
+                                    type="number"
+                                    min="1"
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseInt(e.target.value))}
+                                />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -156,32 +164,20 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
                         <FormItem>
                             <FormLabel>Tags</FormLabel>
                             <FormControl>
-                                <Select
-                                    options={TagsEnum.map(tag => ({ value: tag, label: tag }))}
-                                    isMulti
-                                    onChange={(selected) => field.onChange(selected.map(option => option.value))}
-                                    value={field.value.map(tag => ({ value: tag, label: tag }))}
-                                    placeholder="Select one or more tags"
-                                    className="react-select-container"
-                                    classNamePrefix="react-select"
-                                    styles={{
-                                        menu: base => ({
-                                            ...base,
-                                            maxHeight: "200px",
-                                            overflowY: "auto"
-                                        })
-                                    }}
+                                <MultiSelect
+                                    options={TagsEnum}
+                                    value={field.value}
+                                    onChange={field.onChange}
                                 />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-
                 <Button type="submit" disabled={isLoading}>
                     {isLoading ? "Creating..." : "Create Task"}
                 </Button>
             </form>
         </Form>
-    )
+    );
 }
