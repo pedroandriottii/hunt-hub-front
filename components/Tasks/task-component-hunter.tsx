@@ -1,6 +1,7 @@
 import { UUID } from "crypto";
 import { Star } from "lucide-react";
 import Image from 'next/image';
+import { useRouter } from "next/navigation";
 
 export interface TaskSummary {
   title: string;
@@ -9,10 +10,15 @@ export interface TaskSummary {
   tags: string[];
   ratingRequired: number;
   id: UUID;
+  numberOfMeetings: number;
+  numberOfHuntersRequired: number;
+  deadline: Date;
   onApply: (taskId: UUID) => void;
 }
 
 export default function Task({ title, description, reward, tags, ratingRequired, id, onApply }: TaskSummary) {
+  
+  const router = useRouter();
   const displayedTags = tags.slice(0, 3);
   const hasMoreTags = tags.length > 3;
 
@@ -47,7 +53,10 @@ export default function Task({ title, description, reward, tags, ratingRequired,
       </div>
       <div className="flex justify-between items-center flex-row-reverse">
         <div className="flex items-center gap-4">
-          <button className="text-blue-400 hover:text-blue-300 text-sm transition-colors">
+          <button 
+            className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
+            onClick={() => router.push(`/task/${id}`)}
+            >
             Ver Mais
           </button>
           <button
