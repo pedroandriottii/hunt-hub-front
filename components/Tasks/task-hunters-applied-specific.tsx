@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -14,11 +12,12 @@ interface HunterDetails {
 
 interface TaskHuntersAppliedSpecificProps {
   hunterId: string;
+  taskId: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function TaskHuntersAppliedSpecific({ hunterId, isOpen, onClose }: TaskHuntersAppliedSpecificProps) {
+export function TaskHuntersAppliedSpecific({ hunterId, taskId, isOpen, onClose }: TaskHuntersAppliedSpecificProps) {
   const [hunter, setHunter] = useState<HunterDetails | null>(null);
   const { toast } = useToast();
 
@@ -29,7 +28,6 @@ export function TaskHuntersAppliedSpecific({ hunterId, isOpen, onClose }: TaskHu
           throw new Error("Hunter ID is missing.");
         }
 
-        console.log("Fetching details for Hunter ID:", hunterId);
         const res = await fetch(`http://localhost:8080/api/hunters/${hunterId}`, {
           method: "GET",
           headers: {
@@ -42,7 +40,6 @@ export function TaskHuntersAppliedSpecific({ hunterId, isOpen, onClose }: TaskHu
         }
 
         const data: HunterDetails = await res.json();
-        console.log("Fetched Hunter Data:", data);
         setHunter(data);
       } catch (err) {
         console.error(`Error fetching hunter details for Hunter ID: ${hunterId}`, err);
@@ -59,20 +56,60 @@ export function TaskHuntersAppliedSpecific({ hunterId, isOpen, onClose }: TaskHu
     }
   }, [hunterId, isOpen, toast]);
 
-  const handleAccept = () => {
-    toast({
-      title: "Accepted",
-      description: "You have accepted the hunter's application.",
-    });
-    onClose();
+  const handleAccept = async () => {
+    try {
+      const res = await fetch(`http://localhost:8080/api/task/${taskId}/accept/${hunterId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to accept hunter. Status: ${res.status}`);
+      }
+
+      toast({
+        title: "Accepted",
+        description: "You have accepted the hunter's application.",
+      });
+      onClose();
+    } catch (err) {
+      console.error(`Error accepting hunter for Hunter ID: ${hunterId}`, err);
+      toast({
+        title: "Error",
+        description: `Failed to accept hunter. Please try again.`,
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleRefuse = () => {
-    toast({
-      title: "Refused",
-      description: "You have refused the hunter's application.",
-    });
-    onClose();
+  const handleRefuse = async () => {
+    try {
+      const res = await fetch(`http://localhost:8080/api/task/${taskId}/decline/${hunterId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to refuse hunter. Status: ${res.status}`);
+      }
+
+      toast({
+        title: "Refused",
+        description: "You have refused the hunter's application.",
+      });
+      onClose();
+    } catch (err) {
+      console.error(`Error refusing hunter for Hunter ID: ${hunterId}`, err);
+      toast({
+        title: "Error",
+        description: `Failed to refuse hunter. Please try again.`,
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -110,5 +147,5 @@ export function TaskHuntersAppliedSpecific({ hunterId, isOpen, onClose }: TaskHu
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

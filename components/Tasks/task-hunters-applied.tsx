@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -37,18 +35,14 @@ export function TaskHuntersAppliedPopup({ taskId, isOpen, onClose }: TaskHunters
           throw new Error("Task ID is missing.");
         }
 
-        console.log("Fetching hunters for task ID:", taskId);
         const res = await fetch(`http://localhost:8080/api/task/${taskId}/hunters`);
 
         if (res.status === 204 || res.status === 404 || !res.ok) {
-          console.log("No hunters found or request failed with status:", res.status);
           setHunters([]);
           return;
         }
 
         const rawData: RawHunter[] = await res.json();
-        console.log("Fetched hunters:", rawData);
-
         const processedData: Hunter[] = rawData.map((hunter) => ({
           id: hunter.id.id,
           name: hunter.name,
@@ -71,12 +65,10 @@ export function TaskHuntersAppliedPopup({ taskId, isOpen, onClose }: TaskHunters
   }, [taskId, isOpen, toast]);
 
   const handleHunterClick = (hunterId: string) => {
-    console.log("Selected Hunter ID (on click):", hunterId);
     setSelectedHunterId(hunterId);
   };
 
   const handleSpecificPopupClose = () => {
-    console.log("Closing specific hunter popup.");
     setSelectedHunterId(null);
   };
 
@@ -113,6 +105,7 @@ export function TaskHuntersAppliedPopup({ taskId, isOpen, onClose }: TaskHunters
       {selectedHunterId && (
         <TaskHuntersAppliedSpecific
           hunterId={selectedHunterId}
+          taskId={taskId} // Passando o taskId para o componente filho
           isOpen={!!selectedHunterId}
           onClose={handleSpecificPopupClose}
         />
