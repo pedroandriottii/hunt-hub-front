@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { TaskSummary } from "@/components/Tasks/task-component-hunter";
 import { Star, User, Tag, Calendar, Users, Clock, CheckCircle, AlertCircle, HelpCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button"
+import { handleApply } from "@/components/Tasks/tasks";
 import {
   Card,
   CardContent,
@@ -12,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { UUID } from "crypto";
 
 interface Hunter {
   name: string;
@@ -111,7 +113,7 @@ export default function TaskDetails() {
             </div>
             <Button 
               className="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-lg shadow-lg transform transition duration-300 hover:scale-105"
-              onClick={() => taskDetails.onApply(taskDetails.id)}>
+              onClick={() => id && handleApply(id as UUID)}>
               Apply for this Task
             </Button>
           </div>

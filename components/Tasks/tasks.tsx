@@ -14,6 +14,35 @@ interface TaskApiResponse {
   ratingRequired: number;
 }
 
+export const handleApply = async (taskId: UUID) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const hunterId = localStorage.getItem("userId");
+
+    if (!token || !hunterId) {
+      throw new Error("Missing access token or hunter ID.");
+    }
+
+    const response = await fetch(`http://localhost:8080/task/${taskId}/applying/${hunterId}`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to apply: ${response.statusText}`);
+    }
+
+    const result = await response.text();
+    alert(result);
+  } catch (error) {
+    console.error("Error applying to task:", error);
+    alert("Could not apply to task. Please try again later.");
+  }
+};
+
 export default function Tasks() {
   const [taskSummaries, setTaskSummaries] = useState<TaskSummary[]>([]);
   const [role, setRole] = useState<string | null>(null);
@@ -65,34 +94,7 @@ export default function Tasks() {
     fetchTasks();
   }, []);
 
-  const handleApply = async (taskId: UUID) => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      const hunterId = localStorage.getItem("userId");
 
-      if (!token || !hunterId) {
-        throw new Error("Missing access token or hunter ID.");
-      }
-
-      const response = await fetch(`http://localhost:8080/task/${taskId}/applying/${hunterId}`, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to apply: ${response.statusText}`);
-      }
-
-      const result = await response.text();
-      alert(result);
-    } catch (error) {
-      console.error("Error applying to task:", error);
-      alert("Could not apply to task. Please try again later.");
-    }
-  };
 
   return (
     <div className="w-full">
