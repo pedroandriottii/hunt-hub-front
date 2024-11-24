@@ -65,7 +65,7 @@ export default function Tasks() {
           if (!userId) {
             throw new Error("User ID is missing in localStorage.");
           }
-          url = `http://localhost:8080/task/po/${userId}`;
+          url = `http://localhost:8080/api/task/po/${userId}`;
         }
 
         const res = await fetch(url);
