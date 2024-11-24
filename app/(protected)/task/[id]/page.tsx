@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { TaskSummary } from "@/components/Tasks/task-component-hunter";
 import { Star, User, Tag, Calendar, Users, Clock, CheckCircle, AlertCircle, HelpCircle } from 'lucide-react';
@@ -35,15 +35,15 @@ interface TaskDetailsProps extends TaskSummary {
 }
 
 export default function TaskDetails() {
-  const pathName = usePathname();
-  const id: string = pathName;
+  const pathName = useParams().id;
+  const id = pathName;
   const [taskDetails, setTaskDetails] = useState<TaskDetailsProps | null>(null);
 
   const fetchTaskDetailsProps = async () => {
     if (!id) return;
   
     try {
-      const res = await fetch(`http://localhost:8080${id}`);
+      const res = await fetch(`http://localhost:8080/task/${id}`);
       if (!res.ok) {
         throw new Error(`Failed to fetch task details: ${res.statusText}`);
       }
