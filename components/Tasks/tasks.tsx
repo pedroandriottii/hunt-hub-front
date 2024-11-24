@@ -4,6 +4,7 @@ import Task from "./task-component-hunter";
 import { TaskSummary } from "./task-component-hunter";
 import TaskPO from "./task-component-po";
 import { UUID } from "crypto";
+import { toast, useToast } from "@/hooks/use-toast";
 
 interface TaskApiResponse {
   title: string;
@@ -12,7 +13,7 @@ interface TaskApiResponse {
   tags: string[];
   id: UUID;
   ratingRequired: number;
-  
+
 }
 
 export const handleApply = async (taskId: UUID) => {
@@ -37,16 +38,27 @@ export const handleApply = async (taskId: UUID) => {
     }
 
     const result = await response.text();
-    alert(result);
+    toast({
+      title: "Aplicado com sucesso!",
+      description: result,
+      duration: 5000,
+      variant: "default",
+    })
   } catch (error) {
     console.error("Error applying to task:", error);
-    alert("Could not apply to task. Please try again later.");
+    toast({
+      title: "Erro ao aplicar",
+      description: "Erro ao aplicar para a tarefa. Tente novamente mais tarde.",
+      duration: 5000,
+      variant: "destructive",
+    })
   }
 };
 
 export default function Tasks() {
   const [taskSummaries, setTaskSummaries] = useState<TaskSummary[]>([]);
   const [role, setRole] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const roleFromStorage = localStorage.getItem("role");
@@ -82,7 +94,7 @@ export default function Tasks() {
           tags: task.tags,
           id: task.id,
           ratingRequired: task.ratingRequired,
-          onApply: () => {},
+          onApply: () => { },
         }));
 
         setTaskSummaries(summaries);
