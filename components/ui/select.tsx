@@ -32,7 +32,7 @@ const MultiSelect = ({
           <ChevronDownIcon className="h-4 w-4 opacity-50" />
         </SelectPrimitive.Icon>
       </SelectPrimitive.Trigger>
-      <SelectPrimitive.Content className="relative z-50 max-h-96 overflow-auto rounded-md border bg-popover text-popover-foreground shadow-md">
+      <SelectPrimitive.Content className="overflow-scroll relative z-50 max-h-48  rounded-md border bg-popover text-popover-foreground shadow-md">
         <SelectPrimitive.Viewport className="p-1">
           {options.map((option) => (
             <SelectPrimitive.Item
