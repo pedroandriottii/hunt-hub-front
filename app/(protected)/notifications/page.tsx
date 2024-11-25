@@ -98,7 +98,7 @@ const getNotifications = async () => {
           ))}
         </ul>
       ) : (
-        <p className="text-gray-400">No notification available.</p>
+        <p className="text-gray-400">No notifications available.</p>
       )}
     </div>
   );
