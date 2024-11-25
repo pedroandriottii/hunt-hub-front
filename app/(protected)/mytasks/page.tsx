@@ -1,11 +1,13 @@
 'use client'
 import { useEffect, useState } from "react";
-import { TaskSummary } from "@/components/Tasks/task-component-hunter";
+import { TaskSummary, TaskEnum } from "@/components/Tasks/task-component-hunter";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Page() {
     const [tasks, setTasks] = useState<TaskSummary[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const { toast } = useToast();
 
     const role = localStorage.getItem("role");
     const userId = localStorage.getItem("userId");
@@ -46,14 +48,13 @@ export default function Page() {
 
             const tasks: TaskSummary[] = JSON.parse(text);
             setTasks(tasks);
-            console.log("Tarefas recebidas:", tasks);
         } catch (err) {
             if (err instanceof SyntaxError) {
                 console.error("Resposta não é um JSON válido:", err);
                 setError("Erro: Resposta inesperada do servidor");
             } else {
-                setError("Erro ao buscar tarefas");
                 console.error(err);
+                setError("Erro ao buscar tarefas");
             }
         }
     };
@@ -78,13 +79,29 @@ export default function Page() {
             }
 
             setTasks((prevTasks) =>
-                prevTasks.filter((task) => task.id !== taskId)
+                prevTasks.map((task) =>
+                    task.id === taskId ? { ...task, status: "DONE" } : task
+                )
             );
-            alert("Tarefa completada com sucesso!");
+            toast({
+                title: "Sucesso",
+                description: "Tarefa completada com sucesso",
+            })
+            getAllTasksByUserId()
         } catch (err) {
             console.error(err);
             setError("Erro ao completar a tarefa");
+            toast({
+                title: "Erro",
+                description: "Erro ao completar a tarefa",
+                variant: "destructive"
+            })
         }
+    };
+
+    const evaluateTask = (taskId: string) => {
+        // Redireciona para a página de avaliação ou realiza a lógica necessária
+        alert(`Avaliar tarefa com ID: ${taskId}`);
     };
 
     useEffect(() => {
@@ -134,14 +151,22 @@ export default function Page() {
                                 >
                                     View Details
                                 </Button>
-                                {role === "ROLE_PO" && (
-                                    <Button
-                                        onClick={() => completeTask(task.id)}
-                                        className="text-black bg-green-500 hover:bg-green-200 hover:text-sm transition-colors"
-                                    >
-                                        Complete Task
-                                    </Button>
-                                )}
+                                {role === "ROLE_PO" &&
+                                    (task.taskStatus === TaskEnum.DONE ? (
+                                        <Button
+                                            onClick={() => evaluateTask(task.id)}
+                                            className="text-black bg-yellow-500 hover:bg-yellow-300 text-sm transition-colors"
+                                        >
+                                            Rate
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            onClick={() => completeTask(task.id)}
+                                            className="text-black bg-green-500 hover:bg-green-200 text-sm transition-colors"
+                                        >
+                                            Complete Task
+                                        </Button>
+                                    ))}
                             </div>
                         </li>
                     ))}

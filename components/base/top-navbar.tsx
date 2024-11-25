@@ -88,18 +88,18 @@ export default function TopNavbar() {
                 </div>
             </div>
             <div className="w-28 h-3/5 rounded-xl bg-black flex items-center px-3 justify-between border border-blue-400">
-                <Image src="img/gold.svg" width={6} height={6} className="w-6 h-6" alt="gold" />
+                <Image src="/img/gold.svg" width={6} height={6} className="w-6 h-6" alt="gold" />
                 <p className="text-white text-sm">{userData.points}</p>
 
             </div>
             {role === "ROLE_PO" && (
-                    <button
-                        className="ml-2 px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
-                        onClick={handleGetMorePoints}
-                    >
-                        Get More!
-                    </button>
-                )}
+                <button
+                    className="ml-2 px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+                    onClick={handleGetMorePoints}
+                >
+                    Get More!
+                </button>
+            )}
         </div>
     );
 }

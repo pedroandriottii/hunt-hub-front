@@ -41,6 +41,7 @@ export default function TaskDetails() {
   const id = pathName;
   const [taskDetails, setTaskDetails] = useState<TaskDetailsProps | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const role = localStorage.getItem("role");
 
   const fetchTaskDetailsProps = async () => {
     if (!id) return;
@@ -136,11 +137,13 @@ export default function TaskDetails() {
                 </span>
               ))}
             </div>
-            <Button 
-              className="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-lg shadow-lg transform transition duration-300 hover:scale-105"
-              onClick={() => id && handleApply(id as UUID)}>
-              Apply for this Task
-            </Button>
+            {role === "ROLE_HUNTER" && (
+              <Button
+                className="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 rounded-lg shadow-lg transform transition duration-300 hover:scale-105"
+                onClick={() => id && handleApply(id as UUID)}>
+                Apply for this Task
+              </Button>
+            )}
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
