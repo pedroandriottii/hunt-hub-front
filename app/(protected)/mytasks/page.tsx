@@ -1,13 +1,17 @@
-'use client'
+'use client';
 import { useEffect, useState } from "react";
 import { TaskSummary, TaskEnum } from "@/components/Tasks/task-component-hunter";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { EvaluateTask } from "@/components/Tasks/evaluateTask";
 
 export default function Page() {
     const [tasks, setTasks] = useState<TaskSummary[]>([]);
     const [error, setError] = useState<string | null>(null);
     const { toast } = useToast();
+
+    const [isEvaluateDialogOpen, setIsEvaluateDialogOpen] = useState(false);
+    const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
 
     const role = localStorage.getItem("role");
     const userId = localStorage.getItem("userId");
@@ -80,28 +84,28 @@ export default function Page() {
 
             setTasks((prevTasks) =>
                 prevTasks.map((task) =>
-                    task.id === taskId ? { ...task, status: "DONE" } : task
+                    task.id === taskId ? { ...task, status: TaskEnum.DONE } : task
                 )
             );
             toast({
                 title: "Sucesso",
                 description: "Tarefa completada com sucesso",
-            })
-            getAllTasksByUserId()
+            });
+            getAllTasksByUserId();
         } catch (err) {
             console.error(err);
             setError("Erro ao completar a tarefa");
             toast({
                 title: "Erro",
                 description: "Erro ao completar a tarefa",
-                variant: "destructive"
-            })
+                variant: "destructive",
+            });
         }
     };
 
-    const evaluateTask = (taskId: string) => {
-        // Redireciona para a página de avaliação ou realiza a lógica necessária
-        alert(`Avaliar tarefa com ID: ${taskId}`);
+    const openEvaluateDialog = (taskId: string) => {
+        setSelectedTaskId(taskId);
+        setIsEvaluateDialogOpen(true);
     };
 
     useEffect(() => {
@@ -154,7 +158,7 @@ export default function Page() {
                                 {role === "ROLE_PO" &&
                                     (task.taskStatus === TaskEnum.DONE ? (
                                         <Button
-                                            onClick={() => evaluateTask(task.id)}
+                                            onClick={() => openEvaluateDialog(task.id)}
                                             className="text-black bg-yellow-500 hover:bg-yellow-300 text-sm transition-colors"
                                         >
                                             Rate
@@ -173,6 +177,14 @@ export default function Page() {
                 </ul>
             ) : (
                 <p className="text-gray-400">Você não está em nenhuma task no momento.</p>
+            )}
+
+            {selectedTaskId && (
+                <EvaluateTask
+                    taskId={selectedTaskId}
+                    isOpen={isEvaluateDialogOpen}
+                    onClose={() => setIsEvaluateDialogOpen(false)}
+                />
             )}
         </div>
     );

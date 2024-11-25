@@ -34,7 +34,18 @@ export function TaskHuntersAppliedPopup({ taskId, isOpen, onClose }: TaskHunters
         throw new Error("Task ID is missing.");
       }
 
-      const res = await fetch(`http://localhost:8080/api/task/${taskId}/hunters`);
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("Access token not found.");
+      }
+
+      const res = await fetch(`http://localhost:8080/api/task/${taskId}/hunters`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
       if (res.status === 204 || res.status === 404 || !res.ok) {
         setHunters([]);
@@ -58,24 +69,79 @@ export function TaskHuntersAppliedPopup({ taskId, isOpen, onClose }: TaskHunters
     }
   };
 
+  const handleApproveHunter = async (hunterId: string) => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("Access token not found.");
+      }
+
+      const res = await fetch(`http://localhost:8080/api/task/${taskId}/accept/${hunterId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to approve hunter. Status: ${res.status}`);
+      }
+
+      toast({
+        title: "Approved",
+        description: "Hunter approved successfully.",
+      });
+      fetchHunters(); // Atualiza a lista
+    } catch (err) {
+      console.error("Error approving hunter:", err);
+      toast({
+        title: "Error",
+        description: "Failed to approve hunter. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleRejectHunter = async (hunterId: string) => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("Access token not found.");
+      }
+
+      const res = await fetch(`http://localhost:8080/api/task/${taskId}/decline/${hunterId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to reject hunter. Status: ${res.status}`);
+      }
+
+      toast({
+        title: "Rejected",
+        description: "Hunter rejected successfully.",
+      });
+      fetchHunters(); // Atualiza a lista
+    } catch (err) {
+      console.error("Error rejecting hunter:", err);
+      toast({
+        title: "Error",
+        description: "Failed to reject hunter. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   useEffect(() => {
     if (isOpen) {
       fetchHunters();
     }
-  }, [taskId, isOpen, toast]);
-
-  const handleHunterClick = (hunterId: string) => {
-    setSelectedHunterId(hunterId);
-  };
-
-  const handleSpecificPopupClose = () => {
-    setSelectedHunterId(null);
-  };
-
-  const handleActionCompleted = () => {
-    setSelectedHunterId(null);
-    fetchHunters();
-  };
+  }, [taskId, isOpen]);
 
   return (
     <>
@@ -90,13 +156,28 @@ export function TaskHuntersAppliedPopup({ taskId, isOpen, onClose }: TaskHunters
                 {hunters.map((hunter, index) => (
                   <div
                     key={`${hunter.id}-${index}`}
-                    className="border rounded-md p-4 cursor-pointer hover:bg-gray-100 flex items-center gap-4"
-                    onClick={() => handleHunterClick(hunter.id)}
+                    className="border rounded-md p-4 flex flex-col gap-2"
                   >
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center border border-blue-400 text-white bg-gray-950">
-                      <User className="w-6 h-6" />
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center border border-blue-400 text-white bg-gray-950">
+                        <User className="w-6 h-6" />
+                      </div>
+                      <p className="font-semibold">{hunter.name}</p>
                     </div>
-                    <p className="font-semibold">{hunter.name}</p>
+                    <div className="flex justify-end gap-2 mt-2">
+                      <button
+                        onClick={() => handleApproveHunter(hunter.id)}
+                        className="text-green-500 hover:text-green-700"
+                      >
+                        ✅
+                      </button>
+                      <button
+                        onClick={() => handleRejectHunter(hunter.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        ❌
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -106,16 +187,6 @@ export function TaskHuntersAppliedPopup({ taskId, isOpen, onClose }: TaskHunters
           </ScrollArea>
         </DialogContent>
       </Dialog>
-
-      {selectedHunterId && (
-        <TaskHuntersAppliedSpecific
-          hunterId={selectedHunterId}
-          taskId={taskId}
-          isOpen={!!selectedHunterId}
-          onClose={handleSpecificPopupClose}
-          onActionCompleted={handleActionCompleted}
-        />
-      )}
     </>
   );
 }

@@ -39,6 +39,7 @@ export function TaskHuntersAppliedSpecific({
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            'Authorization': `Bearer ${localStorage.getItem("accessToken")}`,
           },
         });
 
@@ -69,6 +70,7 @@ export function TaskHuntersAppliedSpecific({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // Adicionado o Authorization
         },
       });
 
@@ -97,6 +99,7 @@ export function TaskHuntersAppliedSpecific({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // Adicionado o Authorization
         },
       });
 
@@ -118,6 +121,7 @@ export function TaskHuntersAppliedSpecific({
       });
     }
   };
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
