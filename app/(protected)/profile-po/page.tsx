@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { User } from "lucide-react";
 
 interface POProfile {
@@ -26,7 +25,6 @@ export default function PoPage() {
   const [profile, setProfile] = useState<POProfile | null>(null);
   const [tasks, setTasks] = useState<TaskSummary[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const { toast } = useToast();
 
   useEffect(() => {
     const fetchProfileAndTasks = async () => {
@@ -74,17 +72,7 @@ export default function PoPage() {
 
         const tasksData: TaskSummary[] = await tasksResponse.json();
         setTasks(tasksData);
-
-        toast({
-          title: 'Profile loaded successfully',
-          description: 'The PO profile and tasks were loaded successfully',
-        });
       } catch (error) {
-        toast({
-          title: 'Error loading profile or tasks',
-          description: 'An error occurred while loading the PO profile or tasks. Please try again.',
-          variant: 'destructive',
-        });
         console.error(error);
       } finally {
         setLoading(false);

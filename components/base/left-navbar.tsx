@@ -18,19 +18,18 @@ export default function LeftNavbar() {
     <nav className="group h-full w-28 transition-[width] duration-300 hover:w-60">
       <div className="flex h-full flex-col gap-4 bg-gray-900 p-6 shadow-xl">
         <NavItem icon={Target} onClick={() => router.push('/home')} label="Tasks" />
-        <NavItem icon={Mail} label="Messages" />
         <NavItem icon={Bell} onClick={() => router.push('/notifications')} label="Notifications" />
-        <NavItem 
-          icon={User} 
+        <NavItem
+          icon={User}
           onClick={() => {
-        const role = localStorage.getItem('role');
-        if (role === 'ROLE_PO') {
-          router.push('/profile-po');
-        } else {
-          router.push('/profile');
-        }
-          }} 
-          label="Profile" 
+            const role = localStorage.getItem('role');
+            if (role === 'ROLE_PO') {
+              router.push('/profile-po');
+            } else {
+              router.push('/profile');
+            }
+          }}
+          label="Profile"
         />
         <NavItem icon={BookCheck} onClick={() => router.push('/mytasks')} label="My Tasks" />
         <NavItem

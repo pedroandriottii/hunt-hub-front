@@ -116,18 +116,13 @@ export default function Tasks() {
           deadline: task.deadline,
           number_of_hunters_required: task.numberOfHuntersRequired,
           number_of_meetings: task.numberOfMeetings,
-          onApply: () => {},
+          onApply: () => { },
         }));
 
         setTaskSummaries(summaries);
         console.log("Task Summaries:", summaries);
       } catch (err) {
         console.error("Error fetching tasks:", err);
-        toast({
-          title: "Erro ao buscar tarefas",
-          description: "Houve um problema ao carregar as tarefas. Por favor, tente novamente mais tarde.",
-          variant: "destructive",
-        });
       } finally {
         setIsLoading(false);
       }

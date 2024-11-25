@@ -1,6 +1,5 @@
 'use client';
 
-import { useToast } from '@/hooks/use-toast';
 import React, { useEffect, useState } from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -56,7 +55,6 @@ interface HunterProfile {
 const HunterProfilePage: React.FC = () => {
   const [profile, setProfile] = useState<HunterProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const { toast } = useToast();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -88,11 +86,6 @@ const HunterProfilePage: React.FC = () => {
         const data: HunterProfile = await response.json();
         setProfile(data);
       } catch (error) {
-        toast({
-          title: 'Error loading profile',
-          description: 'An error occurred when trying to load the hunter profile. Please try again.',
-          variant: 'destructive'
-        });
         console.error(error);
       } finally {
         setLoading(false);
@@ -100,7 +93,7 @@ const HunterProfilePage: React.FC = () => {
     };
 
     fetchProfile();
-  }, [toast]);
+  });
 
   if (loading) {
     return <ProfileSkeleton />;
