@@ -1,18 +1,17 @@
-"use client";
-
+'use client'
 import { useEffect, useState } from "react";
 import { TaskSummary } from "@/components/Tasks/task-component-hunter";
 import { Button } from "@/components/ui/button";
 
 export default function Page() {
-    const [tasks, setTasks] = useState<TaskSummary[]>([]); // State to store tasks
-    const [error, setError] = useState<string | null>(null); // State for error handling
+    const [tasks, setTasks] = useState<TaskSummary[]>([]);
+    const [error, setError] = useState<string | null>(null);
+
+    const role = localStorage.getItem("role");
+    const userId = localStorage.getItem("userId");
+    const accessToken = localStorage.getItem("accessToken");
 
     const getAllTasksByUserId = async () => {
-        const role = localStorage.getItem("role");
-        const userId = localStorage.getItem("userId");
-        const accessToken = localStorage.getItem("accessToken");
-
         if (!accessToken) {
             setError("Token de acesso não encontrado");
             return;
@@ -59,6 +58,35 @@ export default function Page() {
         }
     };
 
+    const completeTask = async (taskId: string) => {
+        if (!accessToken) {
+            setError("Token de acesso não encontrado");
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/task/${taskId}/complete`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Erro ao completar a tarefa");
+            }
+
+            setTasks((prevTasks) =>
+                prevTasks.filter((task) => task.id !== taskId)
+            );
+            alert("Tarefa completada com sucesso!");
+        } catch (err) {
+            console.error(err);
+            setError("Erro ao completar a tarefa");
+        }
+    };
+
     useEffect(() => {
         getAllTasksByUserId();
     }, []);
@@ -99,9 +127,22 @@ export default function Page() {
                                     </span>
                                 ))}
                             </div>
-                            <Button onClick={() => navigateToTask(task.id)} className="text-blue-400 hover:text-blue-300 text-sm transition-colors">
-                                View Details
-                            </Button>
+                            <div className="mt-4 flex gap-4">
+                                <Button
+                                    onClick={() => navigateToTask(task.id)}
+                                    className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
+                                >
+                                    View Details
+                                </Button>
+                                {role === "ROLE_PO" && (
+                                    <Button
+                                        onClick={() => completeTask(task.id)}
+                                        className="text-black bg-green-500 hover:bg-green-200 hover:text-sm transition-colors"
+                                    >
+                                        Complete Task
+                                    </Button>
+                                )}
+                            </div>
                         </li>
                     ))}
                 </ul>

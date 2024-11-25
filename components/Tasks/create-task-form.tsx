@@ -236,10 +236,10 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
                         <FormItem>
                             <FormLabel>Tags</FormLabel>
                             <FormControl>
-                                <MultiSelect 
+                                <MultiSelect
                                     options={TagsEnum}
-                                    value={field.value}
-                                    onChange={field.onChange}
+                                    value={field.value || []}
+                                    onChange={(selected) => field.onChange(selected)}
                                 />
                             </FormControl>
                             <FormMessage />

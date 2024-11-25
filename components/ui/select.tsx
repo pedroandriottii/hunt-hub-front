@@ -1,8 +1,5 @@
-"use client";
-
-import * as React from "react";
-import * as SelectPrimitive from "@radix-ui/react-select";
-import { CheckIcon, ChevronDownIcon } from "@radix-ui/react-icons";
+import React, { useState } from "react";
+import { CheckIcon } from "@radix-ui/react-icons";
 
 const MultiSelect = ({
   options,
@@ -13,6 +10,8 @@ const MultiSelect = ({
   value: string[];
   onChange: (selected: string[]) => void;
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const handleToggle = (option: string) => {
     const selected = value.includes(option)
       ? value.filter((v) => v !== option)
@@ -21,35 +20,33 @@ const MultiSelect = ({
   };
 
   return (
-    <SelectPrimitive.Root>
-      <SelectPrimitive.Trigger
-        className="flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+    <div className="relative w-full">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex h-9 w-full items-center justify-between rounded-md border px-3 py-2 text-sm shadow-sm focus:outline-none"
       >
-        <span>
+        <span className="truncate">
           {value.length > 0 ? value.join(", ") : "Selecione as tags"}
         </span>
-        <SelectPrimitive.Icon asChild>
-          <ChevronDownIcon className="h-4 w-4 opacity-50" />
-        </SelectPrimitive.Icon>
-      </SelectPrimitive.Trigger>
-      <SelectPrimitive.Content className="overflow-scroll relative z-50 max-h-48  rounded-md border bg-popover text-popover-foreground shadow-md">
-        <SelectPrimitive.Viewport className="p-1">
+        <span className="ml-2">&#9662;</span>
+      </button>
+      {isOpen && (
+        <div className="absolute z-10 mt-1 w-full max-h-48 overflow-auto rounded-md border bg-white shadow-lg">
           {options.map((option) => (
-            <SelectPrimitive.Item
+            <div
               key={option}
-              value={option}
               onClick={() => handleToggle(option)}
-              className="relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm focus:bg-accent focus:text-accent-foreground"
+              className={`cursor-pointer flex items-center justify-between px-3 py-2 text-sm ${value.includes(option) ? "bg-blue-500 text-white" : "hover:bg-gray-100"
+                }`}
             >
-              <SelectPrimitive.ItemIndicator>
-                {value.includes(option) && <CheckIcon className="h-4 w-4" />}
-              </SelectPrimitive.ItemIndicator>
-              <SelectPrimitive.ItemText>{option}</SelectPrimitive.ItemText>
-            </SelectPrimitive.Item>
+              <span>{option}</span>
+              {value.includes(option) && <CheckIcon />}
+            </div>
           ))}
-        </SelectPrimitive.Viewport>
-      </SelectPrimitive.Content>
-    </SelectPrimitive.Root>
+        </div>
+      )}
+    </div>
   );
 };
 
