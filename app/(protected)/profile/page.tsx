@@ -107,15 +107,15 @@ const HunterProfilePage: React.FC = () => {
   }
 
   if (!profile) {
-    return <div className="text-center p-6">No profile data available</div>;
+    return <div className="text-center p-6 text-gray-200 bg-gray-900 min-h-screen">No profile data available</div>;
   }
 
   return (
-    <div className="bg-gray-100 p-6">
+    <div className="bg-gray-900 text-gray-200 p-6 min-h-screen">
       <div className="mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-6">
-          <Card>
-            <CardContent className="p-6 pt-6">
+          <Card className="bg-gray-800 border-none shadow-none">
+            <CardContent className="p-6">
               <div className="flex items-start gap-6">
                 <Avatar className="h-24 w-24">
                   <AvatarImage src={profile.profilePicture || "/placeholder.svg"} alt={profile.name} />
@@ -123,7 +123,7 @@ const HunterProfilePage: React.FC = () => {
                 </Avatar>
                 <div className="space-y-2">
                   <h1 className="text-2xl font-bold">{profile.name}</h1>
-                  <p className="text-muted-foreground">{profile.bio || "Hey there, I'm a dev currently located in Recife, Brazil, studying computer science at CESAR school!"}</p>
+                  <p className="text-gray-400">{profile.bio || "Hey there, I'm a dev currently located in Recife, Brazil, studying computer science at CESAR school!"}</p>
                   <div className="flex flex-wrap gap-2">
                     {profile.certifications.map((cert, index) => (
                       <Badge key={index} variant="secondary">{cert}</Badge>
@@ -134,18 +134,18 @@ const HunterProfilePage: React.FC = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gray-800 border-none shadow-none">
             <CardContent className="pt-6">
               <h2 className="text-xl font-semibold mb-4">Completed Tasks ({profile.tasks.length})</h2>
               <div className="space-y-4">
                 {profile.tasks.length === 0 ? (
-                  <p className="text-muted-foreground">No tasks completed yet</p>
+                  <p className="text-gray-400">No tasks completed yet</p>
                 ) : (
                   profile.tasks.map((task) => (
-                    <Card key={task.id}>
+                    <Card key={task.id} className="bg-gray-700 border-none shadow-none">
                       <CardContent className="p-4">
-                        <h3 className="font-medium">{task.title}</h3>
-                        <p className="text-sm text-muted-foreground">{task.description}</p>
+                        <h3 className="font-medium text-gray-200">{task.title}</h3>
+                        <p className="text-sm text-gray-400">{task.description}</p>
                       </CardContent>
                     </Card>
                   ))
@@ -156,10 +156,10 @@ const HunterProfilePage: React.FC = () => {
         </div>
 
         <div className="space-y-6">
-          <Card>
+          <Card className="bg-gray-800 border-none shadow-none">
             <CardContent className="pt-6 text-center">
-              <div className="inline-flex items-center justify-center rounded-full bg-gray-100 p-4 mb-4">
-                <span className="text-3xl font-bold">Lvl {profile.levels}</span>
+              <div className="inline-flex items-center justify-center rounded-full bg-gray-700 p-4 mb-4">
+                <span className="text-3xl font-bold text-gray-200">Lvl {profile.levels}</span>
               </div>
               <h2 className="text-xl font-semibold">Legend</h2>
               <div className="flex justify-center gap-1 mt-2">
@@ -167,40 +167,40 @@ const HunterProfilePage: React.FC = () => {
                   i < Math.round(profile.rating) ? (
                     <StarFilledIcon key={i} className="h-5 w-5 text-yellow-500" />
                   ) : (
-                    <StarIcon key={i} className="h-5 w-5 text-gray-300" />
+                    <StarIcon key={i} className="h-5 w-5 text-gray-500" />
                   )
                 ))}
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gray-800 border-none shadow-none">
             <CardContent className="pt-6">
               <div className="space-y-2">
-                <Button variant="outline" className="w-full justify-start">
+                <Button variant="outline" className="w-full justify-start text-gray-200 border-gray-600">
                   {profile.email}
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button variant="outline" className="w-full justify-start text-gray-200 border-gray-600">
                   {profile.linkPortfolio}
                 </Button>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gray-800 border-none shadow-none">
             <CardContent className="pt-6">
               <h2 className="text-xl font-semibold mb-4">Achievements</h2>
               <div className="grid grid-cols-3 gap-4">
                 {profile.achievements.slice(0, 9).map((achievement) => (
-                  <div key={achievement.id} className="aspect-square rounded-full bg-gray-100 flex items-center justify-center">
-                    <span className="text-xs text-center p-1">{achievement.name}</span>
+                  <div key={achievement.id} className="aspect-square rounded-full bg-gray-600 flex items-center justify-center">
+                    <span className="text-xs text-center p-1 text-gray-200">{achievement.name}</span>
                   </div>
                 ))}
                 {Array.from({ length: Math.max(0, 9 - profile.achievements.length) }).map((_, i) => (
-                  <div key={i} className="aspect-square rounded-full bg-gray-100" />
+                  <div key={i} className="aspect-square rounded-full bg-gray-600" />
                 ))}
               </div>
-              <Button variant="ghost" className="w-full mt-4">
+              <Button variant="ghost" className="w-full mt-4 text-gray-200 hover:bg-gray-700">
                 View More
               </Button>
             </CardContent>
@@ -212,53 +212,53 @@ const HunterProfilePage: React.FC = () => {
 };
 
 const ProfileSkeleton: React.FC = () => (
-  <div className="min-h-screen bg-gray-100 p-6 pt-6">
+  <div className="min-h-screen bg-gray-900 p-6">
     <div className="mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6">
       <div className="md:col-span-2 space-y-6">
-        <Card>
+        <Card className="bg-gray-800 border-none shadow-none">
           <CardContent className="p-6">
             <div className="flex items-start gap-6">
-              <Skeleton className="h-24 w-24 rounded-full" />
+              <Skeleton className="h-24 w-24 rounded-full bg-gray-700" />
               <div className="space-y-2 flex-1">
-                <Skeleton className="h-8 w-1/2" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-8 w-1/2 bg-gray-600" />
+                <Skeleton className="h-4 w-full bg-gray-600" />
+                <Skeleton className="h-4 w-3/4 bg-gray-600" />
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-gray-800 border-none shadow-none">
           <CardContent className="p-6 space-y-4">
-            <Skeleton className="h-6 w-1/4" />
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-6 w-1/4 bg-gray-600" />
+            <Skeleton className="h-24 w-full bg-gray-700" />
+            <Skeleton className="h-24 w-full bg-gray-700" />
           </CardContent>
         </Card>
       </div>
       <div className="space-y-6">
-        <Card>
+        <Card className="bg-gray-800 border-none shadow-none">
           <CardContent className="p-6 text-center">
-            <Skeleton className="h-16 w-16 rounded-full mx-auto mb-4" />
-            <Skeleton className="h-6 w-1/2 mx-auto" />
-            <Skeleton className="h-4 w-1/4 mx-auto mt-2" />
+            <Skeleton className="h-16 w-16 rounded-full bg-gray-700 mx-auto mb-4" />
+            <Skeleton className="h-6 w-1/2 bg-gray-600 mx-auto" />
+            <Skeleton className="h-4 w-1/4 bg-gray-600 mx-auto mt-2" />
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-gray-800 border-none shadow-none">
           <CardContent className="p-6 space-y-2">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full bg-gray-700" />
+            <Skeleton className="h-10 w-full bg-gray-700" />
+            <Skeleton className="h-10 w-full bg-gray-700" />
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-gray-800 border-none shadow-none">
           <CardContent className="p-6">
-            <Skeleton className="h-6 w-1/2 mb-4" />
+            <Skeleton className="h-6 w-1/2 bg-gray-600 mb-4" />
             <div className="grid grid-cols-3 gap-4">
               {Array.from({ length: 9 }).map((_, i) => (
-                <Skeleton key={i} className="aspect-square rounded-full" />
+                <Skeleton key={i} className="aspect-square rounded-full bg-gray-700" />
               ))}
             </div>
-            <Skeleton className="h-10 w-full mt-4" />
+            <Skeleton className="h-10 w-full mt-4 bg-gray-700" />
           </CardContent>
         </Card>
       </div>
@@ -267,4 +267,3 @@ const ProfileSkeleton: React.FC = () => (
 );
 
 export default HunterProfilePage;
-

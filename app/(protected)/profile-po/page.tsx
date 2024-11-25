@@ -12,16 +12,24 @@ interface POProfile {
   name: string;
   level: number;
   experience: string;
-  projects?: string[];
+}
+
+interface TaskSummary {
+  id: string;
+  title: string;
+  description: string;
+  reward: number;
+  tags: string[];
 }
 
 export default function PoPage() {
   const [profile, setProfile] = useState<POProfile | null>(null);
+  const [tasks, setTasks] = useState<TaskSummary[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchProfileAndTasks = async () => {
       const poId = localStorage.getItem('userId');
       if (!poId) {
         setLoading(false);
@@ -35,7 +43,8 @@ export default function PoPage() {
           throw new Error('Missing access token.');
         }
 
-        const response = await fetch(`http://localhost:8080/api/po/${poId}`, {
+        // Fetch profile
+        const profileResponse = await fetch(`http://localhost:8080/api/po/${poId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -43,21 +52,37 @@ export default function PoPage() {
           },
         });
 
-        if (!response.ok) {
+        if (!profileResponse.ok) {
           throw new Error('Failed to fetch profile');
         }
 
-        const data: POProfile = await response.json();
-        setProfile(data);
+        const profileData: POProfile = await profileResponse.json();
+        setProfile(profileData);
+
+        // Fetch tasks
+        const tasksResponse = await fetch(`http://localhost:8080/api/task/po/${poId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!tasksResponse.ok) {
+          throw new Error('Failed to fetch tasks');
+        }
+
+        const tasksData: TaskSummary[] = await tasksResponse.json();
+        setTasks(tasksData);
 
         toast({
           title: 'Profile loaded successfully',
-          description: 'The PO profile was loaded successfully',
+          description: 'The PO profile and tasks were loaded successfully',
         });
       } catch (error) {
         toast({
-          title: 'Error loading profile',
-          description: 'An error occurred while loading the PO profile. Please try again.',
+          title: 'Error loading profile or tasks',
+          description: 'An error occurred while loading the PO profile or tasks. Please try again.',
           variant: 'destructive',
         });
         console.error(error);
@@ -66,7 +91,7 @@ export default function PoPage() {
       }
     };
 
-    fetchProfile();
+    fetchProfileAndTasks();
   }, []);
 
   if (loading) {
@@ -84,38 +109,45 @@ export default function PoPage() {
         <div className="md:col-span-2 space-y-6">
           {/* Profile Header */}
           <div className="p-6 bg-gray-800 rounded-lg shadow">
-          <div className="flex items-start gap-6">
-  <User className="h-24 w-24 text-gray-200" />
-  <div className="space-y-2">
-    <h1 className="text-2xl font-bold">{profile.name}</h1>
-    <p className="text-muted-foreground">
-      {profile.experience || "No experience provided"}
-    </p>
-    <div className="flex gap-2">
-      <Badge variant="secondary">Product Owner</Badge>
-    </div>
-  </div>
-</div>
-
+            <div className="flex items-start gap-6">
+              <User className="h-24 w-24 text-gray-200" />
+              <div className="space-y-2">
+                <h1 className="text-2xl font-bold">{profile.name}</h1>
+                <p className="text-muted-foreground">
+                  {profile.experience || "No experience provided"}
+                </p>
+                <div className="flex gap-2">
+                  <Badge variant="secondary">Product Owner</Badge>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Tasks Section */}
           <div className="p-6 bg-gray-800 rounded-lg shadow">
             <h2 className="text-xl font-semibold mb-4">
-              Open Tasks ({profile.projects ? profile.projects.length : 0})
+              Open Tasks ({tasks.length})
             </h2>
-            {profile.projects && profile.projects.length > 0 ? (
+            {tasks.length > 0 ? (
               <div className="space-y-4">
-                {profile.projects.map((project, index) => (
-                  <div key={index} className="p-4 border rounded-lg shadow-sm flex justify-between items-center bg-gray-700 border-gray-600">
+                {tasks.map((task, index) => (
+                  <div key={task.id} className="p-4 border rounded-lg shadow-sm bg-gray-700 border-gray-600">
                     <div>
-                      <h3 className="font-medium text-gray-200 mb-2">Task {index + 1}: {project}</h3>
-                      <div className="flex space-x-2">
-                        <span className="px-2 py-1 text-sm rounded bg-purple-600 text-white">Design</span>
-                        <span className="px-2 py-1 text-sm rounded bg-blue-600 text-white">Development</span>
+                      <h3 className="font-medium text-gray-200 mb-2">Task {index + 1}: {task.title}</h3>
+                      <p className="text-gray-400 mb-4">{task.description}</p>
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {task.tags.map((tag, i) => (
+                          <span key={i} className="bg-gray-600 px-3 py-1 rounded-full text-sm text-white">{tag}</span>
+                        ))}
+                      </div>
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="text-yellow-400 font-medium">Reward: R$ {task.reward} Gold</span>
+                      </div>
+                      <div className="flex justify-end space-x-4">
+                        <button className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500">View More</button>
+                        <button className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500">View Applied</button>
                       </div>
                     </div>
-                    <button className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500">View Details</button>
                   </div>
                 ))}
               </div>
