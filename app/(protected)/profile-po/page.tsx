@@ -148,21 +148,24 @@ export default function PoPage() {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Level Card */}
-          <div className="p-6 bg-gray-800 rounded-lg shadow">
-            <div className="text-center">
-              <div className="inline-block px-4 py-2 rounded-lg bg-gray-700 mb-4">
-                <span className="text-3xl font-bold text-gray-200">
-                  Lvl {profile.level !== undefined ? profile.level : 0}
-                </span>
-              </div>
-              <h2 className="text-sm text-gray-400">Legend</h2>
-              <div className="flex justify-center mt-2">
-                {"★★★★★".split("").map((star, i) => (
-                  <span key={i} className={i < profile.level ? "text-yellow-500" : "text-gray-500"}>{star}</span>
-                ))}
-              </div>
+<div className="p-6 bg-gray-800 rounded-lg shadow">
+  <div className="text-center">
+    <div className="inline-block px-4 py-2 rounded-lg bg-gray-700 mb-4">
+      <span className="text-3xl font-bold text-gray-200">
+        Lvl {Math.floor((tasks.length || 0) / 10)} {/* Calcula o nível baseado em 10 tasks por nível */}
+      </span>
             </div>
-          </div>
+            <h2 className="text-sm text-gray-400">Legend</h2>
+            <div className="flex justify-center mt-2">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <span key={i} className={i < Math.min(5, Math.floor(tasks.length / 2)) ? "text-yellow-500" : "text-gray-500"}>
+                  ★
+                </span>
+              ))}
+            </div>
+        </div>
+      </div>
+
 
           {/* Achievements Card */}
           <div className="p-6 bg-gray-800 rounded-lg shadow">
