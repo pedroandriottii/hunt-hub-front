@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import PublicNavbar from '@/components/base/public-navbar';
 import { FormError } from '@/components/base/formError';
+import { z } from 'zod';
+import createPoSchema from '@/schema/po-schema';
 
 export default function PoPage() {
     const router = useRouter();
@@ -30,6 +32,13 @@ export default function PoPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        const validationResult = createPoSchema.safeParse(formData);
+
+        if (!validationResult.success) {
+            setError(validationResult.error.errors[0].message);
+            return;
+        }
 
         try {
             const response = await fetch('http://localhost:8080/api/po', {

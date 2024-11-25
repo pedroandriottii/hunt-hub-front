@@ -8,6 +8,8 @@ import Link from "next/link";
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import PublicNavbar from '@/components/base/public-navbar';
+import { z } from 'zod';
+import loginSchema from '@/schema/login-schema';
 import { FormError } from '@/components/base/formError';
 
 export default function Signin() {
@@ -31,6 +33,9 @@ export default function Signin() {
         setError(null);
 
         try {
+
+            loginSchema.parse(formData)
+
             const response = await fetch('http://localhost:8080/api/users/login', {
                 method: 'POST',
                 headers: {
@@ -53,7 +58,11 @@ export default function Signin() {
 
             router.push('/home');
         } catch (err: any) {
-            setError(err.message); // Define a mensagem de erro para exibição
+            if (err instanceof z.ZodError) {
+                setError(err.errors[0].message);
+            }else { 
+                setError(err.message); // Define a mensagem de erro para exibição
+            }
         }
     };
 
