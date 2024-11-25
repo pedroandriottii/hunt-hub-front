@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { User } from "lucide-react";
 
 interface POProfile {
   id: string;
@@ -83,21 +84,19 @@ export default function PoPage() {
         <div className="md:col-span-2 space-y-6">
           {/* Profile Header */}
           <div className="p-6 bg-gray-800 rounded-lg shadow">
-            <div className="flex items-start gap-6">
-              <Avatar className="h-24 w-24">
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback>{profile.name.slice(0, 2).toUpperCase()}</AvatarFallback>
-              </Avatar>
-              <div className="space-y-2">
-                <h1 className="text-2xl font-bold">{profile.name}</h1>
-                <p className="text-muted-foreground">
-                  {profile.experience || "No experience provided"}
-                </p>
-                <div className="flex gap-2">
-                  <Badge variant="secondary">Product Owner</Badge>
-                </div>
-              </div>
-            </div>
+          <div className="flex items-start gap-6">
+  <User className="h-24 w-24 text-gray-200" />
+  <div className="space-y-2">
+    <h1 className="text-2xl font-bold">{profile.name}</h1>
+    <p className="text-muted-foreground">
+      {profile.experience || "No experience provided"}
+    </p>
+    <div className="flex gap-2">
+      <Badge variant="secondary">Product Owner</Badge>
+    </div>
+  </div>
+</div>
+
           </div>
 
           {/* Tasks Section */}
