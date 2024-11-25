@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { TaskExpanded } from "@/components/Tasks/task-component-hunter";
 import { Star, User, Tag, Calendar, Users, Clock, CheckCircle, AlertCircle, HelpCircle } from 'lucide-react';
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import { handleApply } from "@/components/Tasks/tasks";
 import {
   Card,
@@ -12,7 +12,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import { UUID } from "crypto";
 
 interface Hunter {
@@ -41,7 +41,14 @@ export default function TaskDetails() {
   const id = pathName;
   const [taskDetails, setTaskDetails] = useState<TaskDetailsProps | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const role = localStorage.getItem("role");
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const roleFromStorage = localStorage.getItem("role");
+      setRole(roleFromStorage);
+    }
+  }, []);
 
   const fetchTaskDetailsProps = async () => {
     if (!id) return;
@@ -81,7 +88,9 @@ export default function TaskDetails() {
   };
 
   useEffect(() => {
-    fetchTaskDetailsProps();
+    if (id) {
+      fetchTaskDetailsProps();
+    }
   }, [id]);
 
   if (isLoading) {

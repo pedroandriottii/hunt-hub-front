@@ -3,7 +3,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { User } from "lucide-react";
-import { TaskHuntersAppliedSpecific } from "./task-hunters-applied-specific";
 
 interface Hunter {
   id: string;
@@ -26,7 +25,6 @@ interface TaskHuntersAppliedPopupProps {
 export function TaskHuntersAppliedPopup({ taskId, isOpen, onClose }: TaskHuntersAppliedPopupProps) {
   const [hunters, setHunters] = useState<Hunter[]>([]);
   const { toast } = useToast();
-  const [selectedHunterId, setSelectedHunterId] = useState<string | null>(null);
 
   const fetchHunters = async () => {
     try {
@@ -92,7 +90,7 @@ export function TaskHuntersAppliedPopup({ taskId, isOpen, onClose }: TaskHunters
         title: "Approved",
         description: "Hunter approved successfully.",
       });
-      fetchHunters(); // Atualiza a lista
+      fetchHunters();
     } catch (err) {
       console.error("Error approving hunter:", err);
       toast({
