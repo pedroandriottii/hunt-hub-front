@@ -2,6 +2,7 @@ import { UUID } from "crypto";
 import { Star } from "lucide-react";
 import Image from 'next/image';
 import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
 
 export interface TaskSummary {
   title: string;
@@ -27,7 +28,7 @@ export default function Task({ title, description, reward, tags, ratingRequired,
   const hasMoreTags = tags.length > 3;
 
   return (
-    <div className="w-full h-56 bg-gray-950 rounded-xl p-5 flex flex-col justify-between text-white">
+    <div className="w-full h-56 bg-gray-800 rounded-xl p-6 flex flex-col justify-between text-white">
       <div>
         <div className="flex justify-between items-start">
             <div className="flex items-center gap-1 mb-4">
@@ -55,18 +56,16 @@ export default function Task({ title, description, reward, tags, ratingRequired,
       </div>
       <div className="flex justify-between items-center flex-row-reverse">
         <div className="flex items-center gap-4">
-          <button 
-            className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
+          <Button className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
             onClick={() => router.push(`/task/${id}`)}
             >
-            Ver Mais
-          </button>
-          <button
-            className="bg-blue-600 hover:bg-blue-700 transition-colors px-3 text-sm py-2 rounded-lg"
+            View More
+          </Button>
+          <Button className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
             onClick={() => onApply(id)}
           >
-            Aplicar
-          </button>
+            Apply
+          </Button>
         </div>
         <div className="flex items-center gap-2">
           <Image src="/img/gold.svg" width={5} height={5} className="h-5 w-5" alt="" />
