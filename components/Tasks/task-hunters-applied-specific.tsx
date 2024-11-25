@@ -70,7 +70,7 @@ export function TaskHuntersAppliedSpecific({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // Adicionado o Authorization
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
 
@@ -99,7 +99,7 @@ export function TaskHuntersAppliedSpecific({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // Adicionado o Authorization
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
 
