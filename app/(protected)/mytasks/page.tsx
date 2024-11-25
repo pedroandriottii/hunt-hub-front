@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { TaskSummary, TaskEnum } from "@/components/Tasks/task-component-hunter";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import EvaluateTaskHunter from "@/components/Tasks/evaluateTaskHunter";
 import { EvaluateTask } from "@/components/Tasks/evaluateTask";
-
 export default function Page() {
     const [tasks, setTasks] = useState<TaskSummary[]>([]);
     const [error, setError] = useState<string | null>(null);
@@ -13,13 +13,28 @@ export default function Page() {
     const [isEvaluateDialogOpen, setIsEvaluateDialogOpen] = useState(false);
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
 
-    const role = localStorage.getItem("role");
-    const userId = localStorage.getItem("userId");
-    const accessToken = localStorage.getItem("accessToken");
+
+    const [role, setRole] = useState<string | null>(null);
+    const [userId, setUserId] = useState<string | null>(null);
+    const [accessToken, setAccessToken] = useState<string | null>(null);
+
+
+    useEffect(() => {
+        setRole(localStorage.getItem("role"));
+        setUserId(localStorage.getItem("userId"));
+        setAccessToken(localStorage.getItem("accessToken"));
+    }, []);
+
+
+    useEffect(() => {
+        if (accessToken && userId) {
+            getAllTasksByUserId();
+        }
+    }, [accessToken, userId]);
 
     const getAllTasksByUserId = async () => {
-        if (!accessToken) {
-            setError("Token de acesso não encontrado");
+        if (!accessToken || !userId) {
+            setError("Token de acesso ou ID de usuário não encontrado");
             return;
         }
 
@@ -50,8 +65,8 @@ export default function Page() {
                 return;
             }
 
-            const tasks: TaskSummary[] = JSON.parse(text);
-            setTasks(tasks);
+            const tasksData: TaskSummary[] = JSON.parse(text);
+            setTasks(tasksData);
         } catch (err) {
             if (err instanceof SyntaxError) {
                 console.error("Resposta não é um JSON válido:", err);
@@ -61,6 +76,28 @@ export default function Page() {
                 setError("Erro ao buscar tarefas");
             }
         }
+    };
+
+    const requestPayment = async (taskId: string) => {
+        const response = await fetch(`http://localhost:8080/api/task/hunter/${userId}/request-payment/${taskId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        if (!response.ok) {
+            toast({
+                title: "Erro",
+                description: "Avalie os usuários antes de solicitar o pagamento",
+                variant: "destructive",
+            });
+            throw new Error("Erro ao solicitar pagamento");
+        }
+        toast({
+            title: "Sucesso",
+            description: "Pagamento solicitado com sucesso",
+        });
     };
 
     const completeTask = async (taskId: string) => {
@@ -108,13 +145,13 @@ export default function Page() {
         setIsEvaluateDialogOpen(true);
     };
 
-    useEffect(() => {
-        getAllTasksByUserId();
-    }, []);
-
     const navigateToTask = (taskId: string) => {
         window.location.href = `/task/${taskId}`;
     };
+
+    if (role === null || userId === null || accessToken === null) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
@@ -155,22 +192,31 @@ export default function Page() {
                                 >
                                     View Details
                                 </Button>
-                                {role === "ROLE_PO" &&
-                                    (task.taskStatus === TaskEnum.DONE ? (
+                                {task.taskStatus === TaskEnum.DONE ? (
+                                    <>
                                         <Button
                                             onClick={() => openEvaluateDialog(task.id)}
                                             className="text-black bg-yellow-500 hover:bg-yellow-300 text-sm transition-colors"
                                         >
                                             Rate
                                         </Button>
-                                    ) : (
-                                        <Button
-                                            onClick={() => completeTask(task.id)}
-                                            className="text-black bg-green-500 hover:bg-green-200 text-sm transition-colors"
-                                        >
-                                            Complete Task
-                                        </Button>
-                                    ))}
+                                        {role === "ROLE_HUNTER" && (
+                                            <Button
+                                                onClick={() => requestPayment(task.id)}
+                                                className="text-black bg-purple-500 hover:bg-purple-300 text-sm transition-colors"
+                                            >
+                                                Request Payment
+                                            </Button>
+                                        )}
+                                    </>
+                                ) : role === "ROLE_PO" ? (
+                                    <Button
+                                        onClick={() => completeTask(task.id)}
+                                        className="text-black bg-green-500 hover:bg-green-200 text-sm transition-colors"
+                                    >
+                                        Complete Task
+                                    </Button>
+                                ) : null}
                             </div>
                         </li>
                     ))}
@@ -180,11 +226,22 @@ export default function Page() {
             )}
 
             {selectedTaskId && (
-                <EvaluateTask
-                    taskId={selectedTaskId}
-                    isOpen={isEvaluateDialogOpen}
-                    onClose={() => setIsEvaluateDialogOpen(false)}
-                />
+                role === "ROLE_HUNTER" ? (
+                    <div>
+                        <EvaluateTaskHunter
+                            taskId={selectedTaskId}
+                            isOpen={isEvaluateDialogOpen}
+                            onClose={() => setIsEvaluateDialogOpen(false)}
+                        />
+                    </div>
+
+                ) : (
+                    <EvaluateTask
+                        taskId={selectedTaskId}
+                        isOpen={isEvaluateDialogOpen}
+                        onClose={() => setIsEvaluateDialogOpen(false)}
+                    />
+                )
             )}
         </div>
     );

@@ -13,7 +13,7 @@ import { Star } from "lucide-react";
 interface Hunter {
     id: string;
     name: string;
-    rating: number; // Para armazenar a avaliação localmente antes de enviar
+    rating: number; 
 }
 
 interface TaskDetails {
@@ -55,7 +55,7 @@ export function EvaluateTask({ taskId, isOpen, onClose }: EvaluateTaskProps) {
             setTaskDetails({
                 id: data.id,
                 title: data.title,
-                hunters: data.hunters.map((hunter: any) => ({
+                hunters: data.hunters.map((hunter: Hunter) => ({
                     id: hunter.id,
                     name: hunter.name,
                     rating: 0, // Inicia com avaliação 0
