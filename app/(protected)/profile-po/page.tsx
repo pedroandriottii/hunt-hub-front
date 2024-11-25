@@ -29,9 +29,16 @@ export default function PoPage() {
       setLoading(true);
 
       try {
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+          throw new Error('Missing access token.');
+        }
+
         const response = await fetch(`http://localhost:8080/api/po/${poId}`, {
+          method: 'GET',
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
         });
 

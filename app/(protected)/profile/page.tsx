@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useToast } from '@/hooks/use-toast';
 import React, { useEffect, useState } from 'react';
@@ -68,11 +68,22 @@ const HunterProfilePage: React.FC = () => {
       setLoading(true);
 
       try {
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+          throw new Error('Missing access token.');
+        }
+
         const response = await fetch(`http://localhost:8080/api/hunters/${hunterId}`, {
+          method: 'GET',
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-          }
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
         });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch profile');
+        }
 
         const data: HunterProfile = await response.json();
         setProfile(data);

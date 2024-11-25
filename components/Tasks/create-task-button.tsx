@@ -19,7 +19,7 @@ export function CreateTaskButton({ poid, userRole }: CreateTaskButtonProps) {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button>Create Task</Button>
+                <Button variant="secondary">Create Task</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>

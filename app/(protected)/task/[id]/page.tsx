@@ -40,36 +40,61 @@ export default function TaskDetails() {
   const pathName = useParams().id;
   const id = pathName;
   const [taskDetails, setTaskDetails] = useState<TaskDetailsProps | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fetchTaskDetailsProps = async () => {
     if (!id) return;
-  
+
+    setIsLoading(true);
     try {
-      const res = await fetch(`http://localhost:8080/api/task/${id}`);
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        throw new Error("Missing access token.");
+      }
+
+      const res = await fetch(`http://localhost:8080/api/task/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       if (!res.ok) {
         throw new Error(`Failed to fetch task details: ${res.statusText}`);
       }
+
       const data: TaskDetailsProps = await res.json();
-  
+
       const parsedData = {
         ...data,
         deadline: new Date(data.deadline),
       };
-  
+
       setTaskDetails(parsedData);
     } catch (err) {
       console.error("Error fetching task details:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchTaskDetailsProps();
   }, [id]);
 
-  if (!taskDetails) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-900">
         <p className="text-white text-2xl">Loading task details...</p>
+      </div>
+    );
+  }
+
+  if (!taskDetails) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-900">
+        <p className="text-white text-2xl">Task details not found</p>
       </div>
     );
   }

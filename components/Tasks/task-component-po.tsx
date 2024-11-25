@@ -9,12 +9,12 @@ import { TaskHuntersAppliedPopup } from "./task-hunters-applied"
 import Link from "next/link"
 
 export interface TaskSummary {
-  title: string
-  description: string
-  reward: number
-  tags: string[]
-  ratingRequired: number
-  id: UUID
+  title: string;
+  description: string;
+  reward: number;
+  tags: string[];
+  ratingRequired: number;
+  id: UUID;
 }
 
 export default function TaskPO({ title, description, reward, tags, ratingRequired, id }: TaskSummary) {
@@ -27,7 +27,7 @@ export default function TaskPO({ title, description, reward, tags, ratingRequire
   }
 
   return (
-    <div className="w-full h-56 bg-gray-950 rounded-xl p-5 flex flex-col justify-between text-white">
+    <div className="w-full h-56 bg-gray-800 rounded-xl p-6 flex flex-col justify-between text-white">
       <div>
         <div className="flex justify-between items-start">
           {ratingRequired === 4 && (
@@ -62,11 +62,7 @@ export default function TaskPO({ title, description, reward, tags, ratingRequire
               View More
             </Button>
           </Link>
-          <Button
-            variant="default"
-            className="bg-blue-600 hover:bg-blue-700 transition-colors px-3 text-sm py-2 rounded-lg"
-            onClick={handleViewHunters}
-          >
+          <Button className="text-blue-400 hover:text-blue-300 text-sm transition-colors" onClick={handleViewHunters}>
             View Applied
           </Button>
         </div>

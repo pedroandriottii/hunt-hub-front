@@ -42,7 +42,7 @@ const getNotifications = async () => {
         });
 
         if (!response.ok) {
-            throw new Error("Erro ao buscar notificações");
+            throw new Error("Error searching notifications");
         }
 
         const notifications: Notification[] = await response.json();
@@ -78,8 +78,8 @@ const getNotifications = async () => {
   };
 
   return (
-    <div className="p-4 bg-gray-900 text-white min-h-screen">
-      <h1 className="text-2xl font-bold mb-4">Notificações</h1>
+    <div className="p-6 bg-gray-900 text-white min-h-screen">
+      <h1 className="text-3xl font-bold mb-6">Notifications</h1>
       {data && data.length > 0 ? (
         <ul className="space-y-4">
           {data.map((notification) => (
@@ -98,7 +98,7 @@ const getNotifications = async () => {
           ))}
         </ul>
       ) : (
-        <p className="text-gray-400">Nenhuma notificação disponível.</p>
+        <p className="text-gray-400">No notification available.</p>
       )}
     </div>
   );

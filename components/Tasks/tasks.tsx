@@ -8,12 +8,17 @@ import { UUID } from "crypto";
 import { toast } from "@/hooks/use-toast";
 
 interface TaskApiResponse {
+  id: UUID;
   title: string;
   description: string;
   reward: number;
   tags: string[];
-  id: UUID;
   ratingRequired: number;
+  deadline: string;
+  numberOfHuntersRequired: number;
+  numberOfMeetings: number;
+  po_id: string;
+  status: string;
 }
 
 export const handleApply = async (taskId: UUID) => {
@@ -28,8 +33,8 @@ export const handleApply = async (taskId: UUID) => {
     const response = await fetch(`http://localhost:8080/api/task/${taskId}/applying/${hunterId}`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -58,12 +63,14 @@ export const handleApply = async (taskId: UUID) => {
 export default function Tasks() {
   const [taskSummaries, setTaskSummaries] = useState<TaskSummary[]>([]);
   const [role, setRole] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const roleFromStorage = localStorage.getItem("role");
     setRole(roleFromStorage);
 
     const fetchTasks = async () => {
+      setIsLoading(true);
       try {
         if (!roleFromStorage) {
           console.error("Role is not defined in localStorage.");
@@ -80,14 +87,19 @@ export default function Tasks() {
           url = `http://localhost:8080/api/task/po/${userId}`;
         }
 
-        const res = await fetch(url);
-        if (!res.ok) {
-          console.warn(`No tasks found or request failed: ${res.statusText}`);
-          setTaskSummaries([]);
-          return;
+        const response = await fetch(url, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`No tasks found or request failed: ${response.statusText}`);
         }
 
-        const data: TaskApiResponse[] = await res.json();
+        const data: TaskApiResponse[] = await response.json();
+
         if (data.length === 0) {
           console.log("No tasks available.");
           setTaskSummaries([]);
@@ -95,19 +107,29 @@ export default function Tasks() {
         }
 
         const summaries: TaskSummary[] = data.map((task) => ({
+          id: task.id,
           title: task.title,
           description: task.description,
           reward: task.reward,
           tags: task.tags,
-          id: task.id,
           ratingRequired: task.ratingRequired,
+          deadline: task.deadline,
+          number_of_hunters_required: task.numberOfHuntersRequired,
+          number_of_meetings: task.numberOfMeetings,
           onApply: () => {},
         }));
 
         setTaskSummaries(summaries);
-        console.log(summaries);
+        console.log("Task Summaries:", summaries);
       } catch (err) {
         console.error("Error fetching tasks:", err);
+        toast({
+          title: "Erro ao buscar tarefas",
+          description: "Houve um problema ao carregar as tarefas. Por favor, tente novamente mais tarde.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -116,7 +138,9 @@ export default function Tasks() {
 
   return (
     <div className="w-full">
-      {taskSummaries.length > 0 ? (
+      {isLoading ? (
+        <p className="text-center text-gray-500">Carregando tarefas...</p>
+      ) : taskSummaries.length > 0 ? (
         <div className="grid grid-cols-3 gap-2">
           {taskSummaries.map((taskSummary, index) => (
             role === "ROLE_HUNTER" ? (
@@ -134,7 +158,7 @@ export default function Tasks() {
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-500">There are no tasks available at the moment.</p>
+        <p className="text-center text-gray-500">No momento, não há tarefas disponíveis.</p>
       )}
     </div>
   );

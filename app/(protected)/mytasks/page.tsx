@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { TaskSummary } from "@/components/Tasks/task-component-hunter";
+import { Button } from "@/components/ui/button";
 
 export default function Page() {
     const [tasks, setTasks] = useState<TaskSummary[]>([]); // State to store tasks
@@ -98,12 +99,9 @@ export default function Page() {
                                     </span>
                                 ))}
                             </div>
-                            <button
-                                onClick={() => navigateToTask(task.id)}
-                                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                            >
-                                Ver Detalhes
-                            </button>
+                            <Button onClick={() => navigateToTask(task.id)} className="text-blue-400 hover:text-blue-300 text-sm transition-colors">
+                                View Details
+                            </Button>
                         </li>
                     ))}
                 </ul>
