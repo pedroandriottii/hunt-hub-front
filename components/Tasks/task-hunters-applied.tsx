@@ -28,37 +28,37 @@ export function TaskHuntersAppliedPopup({ taskId, isOpen, onClose }: TaskHunters
   const { toast } = useToast();
   const [selectedHunterId, setSelectedHunterId] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchHunters = async () => {
-      try {
-        if (!taskId) {
-          throw new Error("Task ID is missing.");
-        }
-
-        const res = await fetch(`http://localhost:8080/api/task/${taskId}/hunters`);
-
-        if (res.status === 204 || res.status === 404 || !res.ok) {
-          setHunters([]);
-          return;
-        }
-
-        const rawData: RawHunter[] = await res.json();
-        const processedData: Hunter[] = rawData.map((hunter) => ({
-          id: hunter.id.id,
-          name: hunter.name,
-        }));
-
-        setHunters(processedData);
-      } catch (err) {
-        console.error("Error fetching hunters:", err);
-        toast({
-          title: "Error",
-          description: "Failed to load hunters. Please try again.",
-          variant: "destructive",
-        });
+  const fetchHunters = async () => {
+    try {
+      if (!taskId) {
+        throw new Error("Task ID is missing.");
       }
-    };
 
+      const res = await fetch(`http://localhost:8080/api/task/${taskId}/hunters`);
+
+      if (res.status === 204 || res.status === 404 || !res.ok) {
+        setHunters([]);
+        return;
+      }
+
+      const rawData: RawHunter[] = await res.json();
+      const processedData: Hunter[] = rawData.map((hunter) => ({
+        id: hunter.id.id,
+        name: hunter.name,
+      }));
+
+      setHunters(processedData);
+    } catch (err) {
+      console.error("Error fetching hunters:", err);
+      toast({
+        title: "Error",
+        description: "Failed to load hunters. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  useEffect(() => {
     if (isOpen) {
       fetchHunters();
     }
@@ -70,6 +70,11 @@ export function TaskHuntersAppliedPopup({ taskId, isOpen, onClose }: TaskHunters
 
   const handleSpecificPopupClose = () => {
     setSelectedHunterId(null);
+  };
+
+  const handleActionCompleted = () => {
+    setSelectedHunterId(null);
+    fetchHunters();
   };
 
   return (
@@ -105,9 +110,10 @@ export function TaskHuntersAppliedPopup({ taskId, isOpen, onClose }: TaskHunters
       {selectedHunterId && (
         <TaskHuntersAppliedSpecific
           hunterId={selectedHunterId}
-          taskId={taskId} // Passando o taskId para o componente filho
+          taskId={taskId}
           isOpen={!!selectedHunterId}
           onClose={handleSpecificPopupClose}
+          onActionCompleted={handleActionCompleted}
         />
       )}
     </>

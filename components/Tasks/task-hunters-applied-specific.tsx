@@ -15,9 +15,16 @@ interface TaskHuntersAppliedSpecificProps {
   taskId: string;
   isOpen: boolean;
   onClose: () => void;
+  onActionCompleted: () => void;
 }
 
-export function TaskHuntersAppliedSpecific({ hunterId, taskId, isOpen, onClose }: TaskHuntersAppliedSpecificProps) {
+export function TaskHuntersAppliedSpecific({
+  hunterId,
+  taskId,
+  isOpen,
+  onClose,
+  onActionCompleted,
+}: TaskHuntersAppliedSpecificProps) {
   const [hunter, setHunter] = useState<HunterDetails | null>(null);
   const { toast } = useToast();
 
@@ -73,7 +80,7 @@ export function TaskHuntersAppliedSpecific({ hunterId, taskId, isOpen, onClose }
         title: "Accepted",
         description: "You have accepted the hunter's application.",
       });
-      onClose();
+      onActionCompleted();
     } catch (err) {
       console.error(`Error accepting hunter for Hunter ID: ${hunterId}`, err);
       toast({
@@ -101,7 +108,7 @@ export function TaskHuntersAppliedSpecific({ hunterId, taskId, isOpen, onClose }
         title: "Refused",
         description: "You have refused the hunter's application.",
       });
-      onClose();
+      onActionCompleted();
     } catch (err) {
       console.error(`Error refusing hunter for Hunter ID: ${hunterId}`, err);
       toast({
