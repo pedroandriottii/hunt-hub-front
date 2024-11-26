@@ -8,6 +8,8 @@ import { UUID } from "crypto";
 import { toast } from "@/hooks/use-toast";
 import MultiSelect from "@/components/ui/select";
 import { Button } from "../ui/button";
+import { Filter, X } from 'lucide-react';
+import { Input } from "../ui/input";
 
 export const TagsEnum = [
   "KOTLIN", "NODE", "TYPESCRIPT", "CRIMINAL_DATA", "FIREBASE", "SQLITE",
@@ -181,78 +183,88 @@ export default function Tasks() {
   return (
     <div className="w-full">
       <div className="mb-4">
-        {role !== "ROLE_PO" && (
-          <div className="flex flex-col gap-2 text-black">
-            <div className="flex flex-row gap-4 items-center text-black flex-wrap">
-              <input
-                type="number"
-                className="border rounded px-2 py-1"
-                placeholder="Reward"
-                value={reward !== null ? reward : ""}
-                onChange={(e) => setReward(e.target.value ? parseFloat(e.target.value) : null)}
-              />
-              <input
-                type="number"
-                className="border rounded px-2 py-1"
-                placeholder="Number of Meetings"
-                value={numberOfMeetings !== null ? numberOfMeetings : ""}
-                onChange={(e) =>
-                  setNumberOfMeetings(e.target.value ? parseInt(e.target.value, 10) : null)
-                }
-              />
-              <input
-                type="number"
-                className="border rounded px-2 py-1"
-                placeholder="Rating Required"
-                value={ratingRequired !== null ? ratingRequired : ""}
-                onChange={(e) =>
-                  setRatingRequired(e.target.value ? parseFloat(e.target.value) : null)
-                }
-              />
-              <input
-                type="number"
-                className="border rounded px-2 py-1"
-                placeholder="PO Rating"
-                value={poRating !== null ? poRating : ""}
-                onChange={(e) => setPoRating(e.target.value ? parseFloat(e.target.value) : null)}
-              />
-              <input
-                type="number"
-                className="border rounded px-2 py-1"
-                placeholder="Number of Hunters Required"
-                value={numberOfHuntersRequired !== null ? numberOfHuntersRequired : ""}
-                onChange={(e) =>
-                  setNumberOfHuntersRequired(e.target.value ? parseInt(e.target.value, 10) : null)
-                }
-              />
-              <div className="bg-white rounded">
-                <MultiSelect
-                  options={TagsEnum}
-                  value={tags}
-                  onChange={(value) => setTags(value)}
-                />
+      {role !== "ROLE_PO" && (
+          <div className=" p-4 rounded-lg shadow-md">
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Filter className="w-4 h-4" />
+                <h2 className="font-semibold">Filter Tasks</h2>
               </div>
-              <Button
-                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                onClick={() => {
-                  setReward(null);
-                  setNumberOfMeetings(null);
-                  setRatingRequired(null);
-                  setPoRating(null);
-                  setNumberOfHuntersRequired(null);
-                  setTags([]);
-                  fetchTasks();
-                }}
-              >
-                Reset
-              </Button>
-              <Button
-                variant="secondary"
-                className="bg-blue-500 text-black px-4 py-2 rounded hover:bg-blue-600"
-                onClick={applyFilters}
-              >
-                Apply Filters
-              </Button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Input
+                  type="number"
+                  placeholder="Reward"
+                  value={reward !== null ? reward : ""}
+                  onChange={(e) => setReward(e.target.value ? parseFloat(e.target.value) : null)}
+                  className="w-full"
+                />
+                <Input
+                  type="number"
+                  placeholder="Number of Meetings"
+                  value={numberOfMeetings !== null ? numberOfMeetings : ""}
+                  onChange={(e) =>
+                    setNumberOfMeetings(e.target.value ? parseInt(e.target.value, 10) : null)
+                  }
+                  className="w-full"
+                />
+                <Input
+                  type="number"
+                  placeholder="Rating Required"
+                  value={ratingRequired !== null ? ratingRequired : ""}
+                  onChange={(e) =>
+                    setRatingRequired(e.target.value ? parseFloat(e.target.value) : null)
+                  }
+                  className="w-full"
+                />
+                <Input
+                  type="number"
+                  placeholder="PO Rating"
+                  value={poRating !== null ? poRating : ""}
+                  onChange={(e) => setPoRating(e.target.value ? parseFloat(e.target.value) : null)}
+                  className="w-full"
+                />
+                <Input
+                  type="number"
+                  placeholder="Number of Hunters Required"
+                  value={numberOfHuntersRequired !== null ? numberOfHuntersRequired : ""}
+                  onChange={(e) =>
+                    setNumberOfHuntersRequired(e.target.value ? parseInt(e.target.value, 10) : null)
+                  }
+                  className="w-full"
+                />
+                <div className="w-full bg-white text-black ">
+                  <MultiSelect
+                    options={TagsEnum}
+                    value={tags}
+                    onChange={(value) => setTags(value)}
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end gap-2 mt-2">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setReward(null);
+                    setNumberOfMeetings(null);
+                    setRatingRequired(null);
+                    setPoRating(null);
+                    setNumberOfHuntersRequired(null);
+                    setTags([]);
+                    fetchTasks();
+                  }}
+                  className="gap-2 bg-red-600"
+                >
+                  <X className="w-4 h-4" />
+                  Reset
+                </Button>
+                <Button
+                  onClick={applyFilters}
+                  className="gap-2"
+                >
+                  <Filter className="w-4 h-4" />
+                  Apply Filters
+                </Button>
+              </div>
             </div>
           </div>
         )}
