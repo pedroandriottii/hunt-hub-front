@@ -86,7 +86,7 @@ export default function Tasks() {
     try {
       const roleFromStorage = localStorage.getItem("role");
       setRole(roleFromStorage);
-
+  
       let url = "http://localhost:8080/api/task";
       if (roleFromStorage === "ROLE_PO") {
         const userId = localStorage.getItem("userId");
@@ -96,31 +96,40 @@ export default function Tasks() {
         }
         url = `http://localhost:8080/api/task/po/${userId}`;
       }
-
+  
       const response = await fetch(url, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-
-      if (!response.ok) {
-        throw new Error(`No tasks found or request failed: ${response.statusText}`);
+  
+      let data: TaskSummary[] = [];
+  
+      // Verificar se a resposta foi bem-sucedida
+      if (response.ok) {
+        data = await response.json();
+        
+        // Se os dados estiverem vazios, não lança erro
+        if (data.length === 0) {
+          console.log("No tasks found.");
+        }
+  
+      } else if (response.status === 400) {
+        console.log("No tasks found (404).");
+      } else {
+        throw new Error(`Request failed: ${response.statusText}`);
       }
-
-      const data: TaskSummary[] = await response.json();
+  
       setTaskSummaries(data);
+  
     } catch (error) {
       console.error("Error fetching tasks:", error);
-      toast({
-        title: "Erro",
-        description: "Falha ao carregar tarefas. Tente novamente mais tarde.",
-        variant: "destructive",
-      });
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   const applyFilters = async () => {
     try {
