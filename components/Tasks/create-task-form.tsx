@@ -79,10 +79,11 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
                 description: "The new task was added to the system.",
             });
             onSuccess();
+            window.location.reload();
         } catch {
             toast({
                 title: "Error creating task",
-                description: "An error occurred when trying to create the task. Please try again.",
+                description: "Check your amount of coins and try again.",
                 variant: "destructive",
             });
         } finally {

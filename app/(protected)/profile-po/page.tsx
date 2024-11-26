@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
