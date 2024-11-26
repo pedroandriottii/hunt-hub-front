@@ -83,7 +83,7 @@ export function CreateTaskForm({ poid, onSuccess }: CreateTaskFormProps) {
         } catch {
             toast({
                 title: "Error creating task",
-                description: "Check your amount of coins and try again.",
+                description: "Check your amount of coins or date and try again.",
                 variant: "destructive",
             });
         } finally {
