@@ -27,7 +27,7 @@ const MultiSelect = ({
         className="flex h-9 w-full items-center justify-between rounded-md border px-3 py-2 text-sm shadow-sm focus:outline-none"
       >
         <span className="truncate">
-          {value.length > 0 ? value.join(", ") : "Select the filters"}
+          {value.length > 0 ? value.join(", ") : "Select tags"}
         </span>
         <span className="ml-2">&#9662;</span>
       </button>
